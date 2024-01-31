@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useCompletion } from "ai/react";
 
 import Collection from "@/components/collection/Collection";
@@ -25,11 +25,37 @@ function ChevronRightIcon(props) {
   );
 }
 
+function XMarkIcon(props) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="1.5"
+      stroke="currentColor"
+      className="w-8 h-8"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6 18 18 6M6 6l12 12"
+      />
+    </svg>
+  );
+}
+
 export default function CreateCollection() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [matches, setMatches] = useState([]);
   const [paperDetails, setPaperDetails] = useState([]);
+
+  const handleQuerySubmit = (e) => {
+    handleSubmit(e); // call the original handleSubmit
+    setPaperDetails([]);
+    setDescription("");
+    setTitle("");
+  };
 
   const sendCompletionForProcessing = async (genTitle, genDescription) => {
     try {
@@ -58,25 +84,31 @@ export default function CreateCollection() {
     }
   };
 
-  const { completion, input, handleInputChange, handleSubmit, isLoading } =
-    useCompletion({
-      api: "/api/completion",
-      onFinish: (prompt, completion) => {
-        const titleStart = completion.indexOf("Title:");
-        const descriptionStart = completion.indexOf("Description:");
+  const {
+    completion,
+    input,
+    handleInputChange,
+    handleSubmit,
+    setInput,
+    isLoading,
+  } = useCompletion({
+    api: "/api/completion",
+    onFinish: (prompt, completion) => {
+      const titleStart = completion.indexOf("Title:");
+      const descriptionStart = completion.indexOf("Description:");
 
-        if (titleStart !== -1 && descriptionStart !== -1) {
-          const titleText = completion
-            .substring(titleStart + 7, descriptionStart)
-            .trim();
-          const descriptionText = completion
-            .substring(descriptionStart + 13)
-            .trim();
+      if (titleStart !== -1 && descriptionStart !== -1) {
+        const titleText = completion
+          .substring(titleStart + 7, descriptionStart)
+          .trim();
+        const descriptionText = completion
+          .substring(descriptionStart + 13)
+          .trim();
 
-          sendCompletionForProcessing(titleText, descriptionText);
-        }
-      },
-    });
+        sendCompletionForProcessing(titleText, descriptionText);
+      }
+    },
+  });
 
   useEffect(() => {
     if (completion.length > 0) {
@@ -98,14 +130,31 @@ export default function CreateCollection() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
-          onChange={handleInputChange}
-          placeholder="what do you want to learn about..."
-          className="font-display bg-base-100 border placeholder-base-500 border-base-50 dark:border-base-950 dark:bg-base-900 rounded-md shadow-md dark:shadow-2xl text-3xl w-full bg-transparent px-4 py-4 mb-12 mt-8"
-        />
+      <form onSubmit={handleQuerySubmit} className="mb-12 mt-8">
+        <div className="relative  flex items-center">
+          <input
+            type="text"
+            value={input}
+            onChange={handleInputChange}
+            placeholder="what do you want to learn about..."
+            className="font-display bg-base-100 border placeholder-base-500 border-base-50 dark:border-base-950 dark:bg-base-900 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:focus:ring-base-700 rounded-md shadow-md dark:shadow-2xl text-3xl w-full bg-transparent px-4 py-4 "
+          />
+          <div className="absolute inset-y-1 right-0 flex pr-4">
+            {input && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setInput("");
+                }}
+                className="inline-flex items-center cursor-pointer group"
+                aria-label="Clear input"
+              >
+                <XMarkIcon className="text-base-500 group-hover:text-base-300 transition h-8 w-8" />
+              </button>
+            )}
+          </div>
+        </div>
       </form>
       {completion.length > 0 && (
         <Collection variant="generated" title={title} description={description}>

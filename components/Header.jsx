@@ -62,41 +62,43 @@ export default function Header() {
   const isIndexPage = pathname === "/";
 
   return (
-    <>
-      <header
+    <header
+      className={clsx(
+        "w-full sticky top-0 left-0 z-50 flex flex-wrap justify-between px-4 2xl:px-0 py-10 bg-base-paper dark:bg-base-black transition duration-500 dark:shadow-none",
+        isScrolled
+          ? "bg-base-paper/95 backdrop-blur-sm [@supports(backdrop-filter:blur(0))]:bg-base-paper/5 dark:bg-base-black/5 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-base-black/5"
+          : "bg-transparent dark:bg-transparent"
+      )}
+    >
+      <nav
         className={clsx(
-          "w-full sticky top-0 left-0 z-50 flex flex-wrap justify-between px-4 2xl:px-0 py-10 bg-base-paper dark:bg-base-black transition duration-500 dark:shadow-none",
-          isScrolled
-            ? "bg-base-paper/95 backdrop-blur-sm [@supports(backdrop-filter:blur(0))]:bg-base-paper/5 dark:bg-base-black/5 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-base-black/5"
-            : "bg-transparent dark:bg-transparent"
+          "flex font-light font-sans  mx-auto w-full",
+          isIndexPage ? "justify-end" : "justify-between"
         )}
       >
-        <nav
-          className={clsx(
-            "flex font-light font-sans  mx-auto w-full",
-            isIndexPage ? "justify-end" : "justify-between"
-          )}
-        >
-          {!isIndexPage && (
-            <Link href="/" className="text-[#072ac8] dark:text-[#d0a215]">
-              <span className="sr-only">Go back to homepage</span>
-              <BackArrowIcon />
-            </Link>
-          )}
-          <div className="relative">
-            <ThemeSelector />
-          </div>
-        </nav>
-      </header>
+        {!isIndexPage && (
+          <Link
+            href="/"
+            className={clsx(
+              "text-[#072ac8] transition-all scale-1 duration-300",
+              isScrolled ? "scale-0" : "dark:text-[#d0a215]"
+            )}
+          >
+            <span className="sr-only">Go back to homepage</span>
+            <BackArrowIcon />
+          </Link>
+        )}
+        <div className="relative">{!isScrolled && <ThemeSelector />}</div>
+      </nav>
       <a
         href="#top"
         className={clsx(
-          "rounded-full w-8 h-8 fixed right-8 bg-base-950 bottom-10 transition-all scale-1 duration-300 flex justify-center",
+          "rounded-full w-8 h-8 absolute top-8 right-0 bg-base-950 transition-all scale-1 duration-300 flex justify-center",
           !isScrolled && "scale-0"
         )}
       >
         <TopArrowIcon className="w-5 h-5 text-base-200 dark:text-base-300 mt-1.5" />
       </a>
-    </>
+    </header>
   );
 }

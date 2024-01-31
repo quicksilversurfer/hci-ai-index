@@ -13,7 +13,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const getEmbeddings = async (text) => {
   try {
     const embedding = await openai.embeddings.create({
-      model: "text-embedding-ada-002", // Replace with your desired model
+      model: "text-embedding-3-small", // Replace with your desired model
       input: text,
     });
     return embedding.data[0].embedding;

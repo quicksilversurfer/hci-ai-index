@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import Image from "next/image";
 
 function shuffleArray(array) {
@@ -26,9 +27,10 @@ function BookImg({ uuid, imgName, title }) {
 
 function PaperImg({ uuid, imgName, title }) {
   const rotations = ["-rotate-3", "rotate-1", "rotate-3"];
-  const [rotationClass1, rotationClass2, rotationClass3] = shuffleArray([
-    ...rotations,
-  ]);
+  const [rotationClass1, rotationClass2, rotationClass3] = useMemo(
+    () => shuffleArray([...rotations]),
+    []
+  );
   const PaperDiv = ({ rotationClass, bgClass }) => (
     <div
       className={`${rotationClass} absolute h-full w-full pb-6 transform rounded-sm border border-base-200 ${bgClass} shadow-md`}
