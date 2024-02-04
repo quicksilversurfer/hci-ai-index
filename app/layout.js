@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body
         className={clsx(
-          "h-full w-full min-h-screen flex flex-col antialiased bg-base-paper dark:bg-base-950 max-w-screen-2xl mx-auto selection:bg-yellowColl dark:selection:bg-yellow-light ",
+          "h-full w-full min-h-screen flex flex-col antialiased bg-base-paper dark:bg-base-950 mx-auto selection:bg-yellowColl dark:selection:bg-yellow-light",
           bespoke.variable,
           jetbrains.variable,
           supreme.variable
@@ -42,8 +42,9 @@ export default function RootLayout({ children }) {
       >
         <Providers>
           <Header />
-          {children}
-          <Footer />
+          <div className="max-w-screen-2xl mx-auto w-full grow flex flex-col">
+            {children} <Footer />
+          </div>
         </Providers>
       </body>
     </html>

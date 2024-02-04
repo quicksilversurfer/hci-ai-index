@@ -119,7 +119,7 @@ export default function Collection({
         </div>
       </div>
 
-      <span className="absolute right-0 top-0 text-[#072ac8] dark:text-[#d0a215] transition duration-700 opacity-0 group-hover/collection:opacity-80 -translate-x-1 translate-y-1 group-hover/collection:translate-x-0 group-hover/collection:translate-y-0">
+      <span className="hidden sm:block absolute right-0 top-0 text-[#072ac8] dark:text-[#d0a215] transition duration-700 opacity-0 group-hover/collection:opacity-80 -translate-x-1 translate-y-1 group-hover/collection:translate-x-0 group-hover/collection:translate-y-0">
         {variant === "overview" ? (
           <ArrowIcon />
         ) : variant === "generated" ? null : (

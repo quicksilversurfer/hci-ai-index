@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useState, useEffect, Suspense } from "react";
 import { useCompletion } from "ai/react";
@@ -40,6 +41,26 @@ function XMarkIcon(props) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M6 18 18 6M6 6l12 12"
+      />
+    </svg>
+  );
+}
+
+function DocumentSearch(props) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth=".5"
+      stroke="currentColor"
+      className="w-6 h-6"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
       />
     </svg>
   );
@@ -130,14 +151,14 @@ export default function CreateCollection() {
 
   return (
     <>
-      <form onSubmit={handleQuerySubmit} className="mb-12 mt-8">
+      <form onSubmit={handleQuerySubmit} className="mb-12 mt-12">
         <div className="relative  flex items-center">
           <input
             type="text"
             value={input}
             onChange={handleInputChange}
             placeholder="what do you want to learn about..."
-            className="font-display bg-base-100 border placeholder-base-500 border-base-50 dark:border-base-950 dark:bg-base-900 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:focus:ring-base-700 rounded-md shadow-md dark:shadow-2xl text-3xl w-full bg-transparent px-4 py-4 "
+            className="font-display bg-base-100 border placeholder-base-500 border-base-50 dark:border-base-950 dark:bg-base-900 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:focus:ring-yellow rounded-md shadow-md dark:shadow-2xl text-3xl w-full bg-transparent px-4 py-4 "
           />
           <div className="absolute inset-y-1 right-0 flex pr-4">
             {input && (
@@ -156,6 +177,29 @@ export default function CreateCollection() {
           </div>
         </div>
       </form>
+      {completion.length === 0 && (
+        <div className="flex grow font-sans justify-center items-center text-center text-base-500 dark:text-base-700">
+          <div className="mx-auto max-w-96 mb-24">
+            <DocumentSearch className="w-16 h-16 mx-auto mb-8" />
+            <div>
+              <p className="text-lg mb-8 text-pretty">
+                Not sure where to begin? Try one of these example queries:
+              </p>
+              <ul className="mb-4 space-y-6 text-pretty font-display text-lg">
+                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 w-fit mx-auto">
+                  virtual reality and cognitive load
+                </li>
+                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 w-fit mx-auto">
+                  hci in healthcare: case studies
+                </li>
+                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 w-fit mx-auto">
+                  impact of ai on ux
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
       {completion.length > 0 && (
         <Collection variant="generated" title={title} description={description}>
           {paperDetails.papers &&

@@ -1,7 +1,7 @@
 export default async function AllCollectionsSkeleton() {
   return (
-    <article className="group max-w-full mt-24 rounded-lg overflow-hidden border-b border-b-base-900/20 relative h-[26rem]">
-      <div className="relative w-full sm:w-fit after:hidden sm:after:block  after:bg-yellow-light dark:after:bg-yellow after:top-0 after:h-full after:rounded-t-md after:w-8 after:absolute after:-right-4 after:skew-x-[30deg]">
+    <article className="group mt-24 rounded-lg overflow-hidden border-b border-b-base-900/20 relative h-[26rem] max-w-screen-2xl">
+      <div className="relative 2xl:w-[1536px] sm:w-fit after:hidden sm:after:block  after:bg-yellow-light dark:after:bg-yellow after:top-0 after:h-full after:rounded-t-md after:w-8 after:absolute after:-right-4 after:skew-x-[30deg]">
         <h3 className="bg-yellow-light dark:bg-yellow h-full pt-4 px-6 rounded-t-md uppercase font-mono text-base-950">
           Loading...
         </h3>

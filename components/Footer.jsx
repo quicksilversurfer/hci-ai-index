@@ -31,9 +31,9 @@ function SparklesIcon(props) {
 
 export default function Footer() {
   return (
-    <footer className="flex flex-col sm:flex-row justify-between border-t border-t-base-500 mx-4 sm:mx-0 mt-24 mb-12 font-display pt-4 ">
+    <footer className="flex flex-col sm:flex-row justify-between border-t border-t-base-500 mt-24 mb-12 font-display pt-4 mx-4 sm:mx-8 2xl:mx-0">
       <div>
-        <ul className="flex flex-row space-x-8">
+        <ul className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-8 pb-8 sm:pb-0">
           <li>
             project by{" "}
             <a href="https://www.prateeksolanki.com/" className="link-style">
@@ -48,6 +48,11 @@ export default function Footer() {
           <li>
             <Link href="/about" className="link-style">
               about
+            </Link>
+          </li>
+          <li>
+            <Link href="/disclaimer" className="link-style">
+              *disclaimer
             </Link>
           </li>
         </ul>

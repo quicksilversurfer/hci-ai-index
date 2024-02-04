@@ -64,7 +64,7 @@ export default function Header() {
   return (
     <header
       className={clsx(
-        "w-full sticky top-0 left-0 z-50 flex flex-wrap justify-between px-4 2xl:px-0 py-10 bg-base-paper dark:bg-base-black transition duration-500 dark:shadow-none",
+        "w-full sticky top-0 left-0 z-50 flex flex-wrap justify-between px-4 sm:px-8 2xl:px-0 py-10 bg-base-paper dark:bg-base-black transition duration-500 dark:shadow-none",
         isScrolled
           ? "bg-base-paper/95 backdrop-blur-sm [@supports(backdrop-filter:blur(0))]:bg-base-paper/5 dark:bg-base-black/5 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-base-black/5"
           : "bg-transparent dark:bg-transparent"
@@ -72,7 +72,7 @@ export default function Header() {
     >
       <nav
         className={clsx(
-          "flex font-light font-sans  mx-auto w-full",
+          "flex font-light font-sans max-w-screen-2xl mx-auto w-full h-6",
           isIndexPage ? "justify-end" : "justify-between"
         )}
       >
@@ -88,17 +88,21 @@ export default function Header() {
             <BackArrowIcon />
           </Link>
         )}
-        <div className="relative">{!isScrolled && <ThemeSelector />}</div>
+        <div className="relative left-0 top-0">
+          <ThemeSelector
+            className={clsx("absolute top-0 left-0", !isScrolled && "hidden")}
+          />
+          <a
+            href="#top"
+            className={clsx(
+              "rounded-full w-8 h-8 bg-base-950 absolute top-0 left-0 transition-all scale-1 duration-300 flex justify-center",
+              !isScrolled && "scale-0"
+            )}
+          >
+            <TopArrowIcon className="w-5 h-5 text-base-200 dark:text-base-300 mt-1.5" />
+          </a>
+        </div>
       </nav>
-      <a
-        href="#top"
-        className={clsx(
-          "rounded-full w-8 h-8 absolute top-8 right-0 bg-base-950 transition-all scale-1 duration-300 flex justify-center",
-          !isScrolled && "scale-0"
-        )}
-      >
-        <TopArrowIcon className="w-5 h-5 text-base-200 dark:text-base-300 mt-1.5" />
-      </a>
     </header>
   );
 }

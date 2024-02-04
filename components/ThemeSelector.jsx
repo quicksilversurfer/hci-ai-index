@@ -53,6 +53,7 @@ export default function ThemeSelector(props) {
   }
 
   const handleThemeChange = (newTheme) => {
+    if (!newTheme) return;
     if (newTheme === "dark") {
       setTheme("light");
     } else {
