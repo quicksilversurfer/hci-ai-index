@@ -23,11 +23,11 @@ export default async function About() {
           <p className="mt-4 text-base font-sans font-light text-pretty">
             I've long been fascinated by the rich history and academic research
             behind human-computer interaction and interaction design. As a
-            curious designer, I'm always seeking to learn new things that can
-            fuel my work with fresh inspiration and perspectives. I often find
-            that reading papers provides me with meaningful depth and knowledge
-            that appeals to my innate desire to learn more about the world, and
-            this field that I am so passionate about.
+            designer, I'm always seeking to learn new things that can fuel my
+            work with fresh inspiration and perspectives. I often find that
+            reading papers provides me with meaningful depth and knowledge that
+            appeals to my innate desire to learn more about the world, and this
+            field that I am so passionate about.
           </p>
           <p className="mt-4 text-base font-sans font-light text-pretty">
             Over the years, I've realized that academic literature isn't always
@@ -48,16 +48,17 @@ export default async function About() {
           <p className="mt-4 text-base font-sans font-light text-pretty">
             Through this effort, I learned so much about the foundations of HCI
             and also became acutely aware of all that I don't yet fully grasp.
-            But most rewarding was discovering so many fascinating perspectives
-            that I believe will help me approach design challenges in new and
-            interesting ways.
+            But most rewarding of all, was discovering so many fascinating
+            perspectives that I believe will help me approach design challenges
+            in new and interesting ways.
           </p>
           <p className="mt-4 text-base font-sans font-light text-pretty">
             If you found any value in these amateur compilations, or they
             provide a springboard to explore papers that pique your interests -
             I'm overjoyed! My sincere wish is that this site sparks your own
-            learning adventures into the captivating world of HCI. A vantage
-            point for you to explore your own interests in this wonderful field.
+            learning adventures into the captivating world of HCI. A little
+            vantage point for you to explore your own interests in this
+            wonderful field.
           </p>
           <h2 className="font-mono mt-8 mb-4 uppercase text-sm">
             Looking Back, Looking Forward
@@ -65,17 +66,23 @@ export default async function About() {
           <p className="mt-4 text-base font-sans font-light text-pretty">
             With AI ushering in a paradigm shift, it's especially important
             today to bridge the academic, and practitioner sides of HCI. As
-            Susanne Bødker notes in HCI Remixed, "..we need to keep reminding
-            ourselves of how and why, our everyday technology came into being.
-            In order to be better at pointing to the future, it needs to be
-            aware of its history too."
+            Susanne Bødker notes in{" "}
+            <a
+              href="https://www.amazon.com/HCI-Remixed-Reflections-Influenced-Community/dp/0262050889"
+              className="link-style"
+            >
+              HCI Remixed
+            </a>
+            , "..we need to keep reminding ourselves of how and why, our
+            everyday technology came into being. In order to be better at
+            pointing to the future, it needs to be aware of its history too."
           </p>
           <p className="mt-4 text-base font-sans font-light text-pretty">
             I really believe that understanding our academic history is crucial
             for innovating thoughtfully. While we must keep sight of future
             opportunities, we shouldn't overlook the hard-won UX principles of
             the past. In fact, longstanding HCI concepts, once impossible, may
-            prove newly powerful when reimagined through modern capabilities.
+            open new possibilities when reimagined through modern capabilities.
           </p>
           <p className="mt-4 text-base font-sans font-light text-pretty">
             If my little contribution helps even one fellow traveller uncover
@@ -119,6 +126,13 @@ export default async function About() {
               >
                 top university programs
               </a>{" "}
+              , alongside references from books such as Ben Shneiderman's{" "}
+              <a
+                href="https://www.amazon.com/Human-Centered-AI-Ben-Shneiderman/dp/0192845292"
+                className="link-style"
+              >
+                Human-Centered AI
+              </a>{" "}
               also provided a great foundation.
             </p>
             <p className="mt-4 text-base font-sans font-light text-pretty">
@@ -134,7 +148,7 @@ export default async function About() {
               made intuitive sense. The interconnected and overlapping nature of
               HCI research makes it quite challenging to categorize papers into
               neat buckets, but I eventually landed on the current structure,
-              which felt right.
+              which feels right, and provides a nice overview.
             </p>
             <p className="mt-4 text-base font-sans font-light text-pretty">
               I also implemented semantic search using a Retrieval Augmented
@@ -142,14 +156,15 @@ export default async function About() {
               <a href="https://www.pinecone.io/" className="link-style">
                 Pinecone
               </a>{" "}
-              vector database backend.Embedding paper summaries into semantic
-              vectors and storing them for comparison against user queries
-              surfaces relevant results. Ultimately, interpreting search queries
-              by semantic similarity rather than just keywords. The results are
-              decent but could be further improved by higher quality embeddings
-              from larger volumes of HCI content. There is ongoing research in
-              this area, and as capabilities and techniques evolve, I hope to
-              integrate them into this project.
+              vector database backend. I created embeddings of the the paper
+              summaries which are then used for comparison against user queries,
+              surfacing relevant results. Ultimately, interpreting search
+              queries by semantic similarity rather than just keywords. The
+              results are decent but could be further improved by higher quality
+              embeddings from larger volumes of HCI content, or enhanching the
+              search through keywords. There is ongoing research in this area,
+              and as capabilities and techniques evolve, I hope to integrate
+              them into this project.
             </p>
             <p className="mt-4 text-base font-sans font-light text-pretty">
               On the whole, this project gave me hands-on experience with

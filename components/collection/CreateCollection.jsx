@@ -152,7 +152,7 @@ export default function CreateCollection() {
   return (
     <>
       <form onSubmit={handleQuerySubmit} className="mb-12 mt-12">
-        <div className="relative  flex items-center">
+        <div className="relative flex items-center">
           <input
             type="text"
             value={input}

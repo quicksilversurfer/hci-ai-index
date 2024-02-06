@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import AllCollections from "@/components/collection/AllCollections";
 import AllCollectionsSkeleton from "@/components/collection/AllCollectionsSkeleton";
+import Sparkles from "@/components/Sparkles";
+
 import { Suspense } from "react";
 
 export default function Home() {
@@ -20,9 +22,11 @@ export default function Home() {
       </h2>
       <h3 className="text-3xl text-pretty font-display max-w-[55ch] text-base-600 dark:text-base-500 mt-4">
         browse through the collections below or{" "}
-        <Link href="/create" className="text-base-300 link-style">
-          generate your own
-        </Link>
+        <Sparkles>
+          <Link href="/create" className="text-base-300 link-style">
+            generate your own
+          </Link>
+        </Sparkles>
       </h3>
       <Suspense fallback={<AllCollectionsSkeleton />}>
         <AllCollections />
