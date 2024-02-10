@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import { JetBrains_Mono } from "next/font/google";
 
 const bespoke = localFont({
-  src: "../fonts/bespokesans-variable.woff2",
+  src: "../fonts/BespokeSans-Variable.ttf",
   display: "swap",
   variable: "--font-bespoke",
 });
@@ -19,6 +19,7 @@ const supreme = localFont({
   variable: "--font-supreme",
 });
 const jetbrains = JetBrains_Mono({
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
   variable: "--font-jetbrains",

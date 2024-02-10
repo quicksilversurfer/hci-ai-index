@@ -92,7 +92,7 @@ function PaperExpanded({
             rel="noopener noreferrer"
             className="group/link transition hover:ease-in duration-150 mt-8 rounded-full bg-base-950/10 px-2.5 py-1.5 shadow-sm hover:bg-base-950/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-light max-w-fit flex flex-row"
           >
-            <div className="text-base-900 group-hover/link:text-base-paper font-display text-sm font-semibold">
+            <div className="text-base-900 group-hover/link:text-base-paper font-display text-sm font-[590]">
               Read more
             </div>
 

@@ -66,7 +66,7 @@ export default function Header() {
       className={clsx(
         "w-full sticky top-0 left-0 z-50 flex flex-wrap justify-between px-4 sm:px-8 2xl:px-0 py-10 bg-base-paper dark:bg-base-black transition duration-500 dark:shadow-none",
         isScrolled
-          ? "bg-base-paper/95 backdrop-blur-sm [@supports(backdrop-filter:blur(0))]:bg-base-paper/5 dark:bg-base-black/5 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-base-black/5"
+          ? "bg-base-paper/5 backdrop-blur-sm [@supports(backdrop-filter:blur(0))]:bg-base-paper/5 dark:bg-base-black/5 dark:backdrop-blur dark:[@supports(backdrop-filter:blur(0))]:bg-base-black/5"
           : "bg-transparent dark:bg-transparent"
       )}
     >

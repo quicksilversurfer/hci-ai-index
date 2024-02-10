@@ -6,26 +6,6 @@ import { useCompletion } from "ai/react";
 import Collection from "@/components/collection/Collection";
 import PaperDetails from "@/components/papers/PaperDetails";
 
-function ChevronRightIcon(props) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth="2.5"
-      stroke="currentColor"
-      className="w-6 h-6"
-      {...props}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m8.25 4.5 7.5 7.5-7.5 7.5"
-      />
-    </svg>
-  );
-}
-
 function XMarkIcon(props) {
   return (
     <svg
@@ -80,7 +60,6 @@ export default function CreateCollection() {
 
   const sendCompletionForProcessing = async (genTitle, genDescription) => {
     try {
-      console.log("Sending completion:" + completion);
       const response = await fetch("/api/processCompletion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -96,7 +75,6 @@ export default function CreateCollection() {
       }
 
       const responseData = await response.json();
-      //   console.log("Server response:", responseData);
       setPaperDetails(responseData);
 
       // Catch errors
@@ -112,6 +90,7 @@ export default function CreateCollection() {
     handleSubmit,
     setInput,
     isLoading,
+    complete,
   } = useCompletion({
     api: "/api/completion",
     onFinish: (prompt, completion) => {
@@ -158,7 +137,7 @@ export default function CreateCollection() {
             value={input}
             onChange={handleInputChange}
             placeholder="what do you want to learn about..."
-            className="font-display bg-base-100 border placeholder-base-500 border-base-50 dark:border-base-950 dark:bg-base-900 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:focus:ring-yellow rounded-md shadow-md dark:shadow-2xl text-3xl w-full bg-transparent px-4 py-4 "
+            className="font-display bg-base-100 border placeholder-base-500 border-base-50 dark:border-base-950 dark:bg-base-900 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:focus:ring-yellow rounded-md shadow-md dark:shadow-2xl text-2xl md:text-3xl w-full bg-transparent px-4 py-4 "
           />
           <div className="absolute inset-y-1 right-0 flex pr-4">
             {input && (
@@ -186,14 +165,41 @@ export default function CreateCollection() {
                 Not sure where to begin? Try one of these example queries:
               </p>
               <ul className="mb-4 space-y-6 text-pretty font-display text-lg">
-                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 w-fit mx-auto">
-                  virtual reality and cognitive load
+                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 hover:border-base-500 hover:dark:border-base-700 transition-all w-fit mx-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const promptValue = "virtual reality and cognitive load";
+                      complete(promptValue);
+                      setInput(promptValue);
+                    }}
+                  >
+                    virtual reality and cognitive load
+                  </button>
                 </li>
-                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 w-fit mx-auto">
-                  hci in healthcare: case studies
+                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 hover:border-base-500 hover:dark:border-base-700 transition-all w-fit mx-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const promptValue = "hci in healthcare: case studies";
+                      complete(promptValue);
+                      setInput(promptValue);
+                    }}
+                  >
+                    hci in healthcare: case studies
+                  </button>
                 </li>
-                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 w-fit mx-auto">
-                  impact of ai on ux
+                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 hover:border-base-500 hover:dark:border-base-700 transition-all w-fit mx-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const promptValue = "impact of ai on ux";
+                      complete(promptValue);
+                      setInput(promptValue);
+                    }}
+                  >
+                    impact of ai on ux
+                  </button>
                 </li>
               </ul>
             </div>

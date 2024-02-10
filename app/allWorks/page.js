@@ -9,7 +9,7 @@ export default async function PaperList() {
       <h1 className="text-8xl font-display font-medium text-base-900 dark:text-base-paper mt-24 ">
         all works
       </h1>
-      <div className="space-y-4 mt-12 columns-3 gap-12">
+      <div className="space-y-4 mt-12 columns-1 md:columns-2 2xl:columns-3 gap-12">
         {" "}
         {papers &&
           papers.length > 0 &&

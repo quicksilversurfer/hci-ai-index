@@ -32,7 +32,7 @@ export default function Sparkles({
   const { theme } = useTheme();
   DEFAULT_COLOR = theme === "dark" ? "#FFC700" : "#DA702C";
   const [sparkles, setSparkles] = useState(() => {
-    return range(1).map(() => generateSparkle(color));
+    return range(2).map(() => generateSparkle(color));
   });
 
   useRandomInterval(
