@@ -26,6 +26,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://hci-ai-index-hxjg.vercel.app/"),
   title: "HCI Index - A Practitioner's Guide to HCI Literature",
   description:
     "Explore a curated guide to HCI literature, designed to enhance understanding and spark curiosity in the field of Human-Computer Interaction, made using AI.",
@@ -44,6 +45,16 @@ export const metadata = {
     "Ethics in Design",
   ],
   referrer: "origin-when-cross-origin",
+  openGraph: {
+    images: "/opengraph-image.png", // Make sure the path to your Open Graph image is correct
+  },
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/en-US",
+      // Add more languages or regions as needed
+    },
+  },
 };
 
 export default function RootLayout({ children }) {
