@@ -52,17 +52,16 @@ export default function Footer() {
           </li>
           <li>
             <Link href="/disclaimer" className="link-style">
-              *disclaimer
+              * disclaimer
             </Link>
           </li>
         </ul>
       </div>
       <div>
-        {/* <p className="w-fit">
-          built with <HeartIcon className="inline-block w-5 h-5 text-red" /> &{" "}
-          <SparklesIcon className="inline-block w-5 h-5 text-yellow-light" />
-        </p> */}
-        <p className="text-base-700 dark:text-base-300">built with ❤️ & 🤖</p>
+        <p className="w-fit">
+          built with <HeartIcon className="inline-block w-4 h-4 text-red" /> &{" "}
+          <SparklesIcon className="inline-block w-4 h-4 text-yellow-light" />
+        </p>
       </div>
     </footer>
   );

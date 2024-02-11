@@ -137,7 +137,7 @@ export default function CreateCollection() {
             value={input}
             onChange={handleInputChange}
             placeholder="what do you want to learn about..."
-            className="font-display bg-base-100 border placeholder-base-500 border-base-50 dark:border-base-950 dark:bg-base-900 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:focus:ring-yellow rounded-md shadow-md dark:shadow-2xl text-2xl md:text-3xl w-full bg-transparent px-4 py-4 "
+            className="font-display bg-base-100 border placeholder-base-500 border-base-150 dark:border-base-850 dark:bg-base-900 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:focus:ring-yellow rounded-md shadow-md dark:shadow-2xl text-2xl md:text-3xl w-full bg-transparent px-4 py-4 "
           />
           <div className="absolute inset-y-1 right-0 flex pr-4">
             {input && (

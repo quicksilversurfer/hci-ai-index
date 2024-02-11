@@ -70,12 +70,12 @@ function PaperExpanded({
           />
         </div>
       </a>
-      <div className="marker:text-base-800 dark:marker:text-base-300 grow self-center group">
-        <div className="max-w-prose">
+      <div className="marker:text-base-800 dark:marker:text-base-300 grow self-center group mt-12 lg:mt-0">
+        <div className="w-full lg:max-w-prose">
           <h3 className="mb-4 font-display font-medium text-2xl text-base-900 dark:text-base-950 3xl:mt-0 text-pretty">
             {title}
           </h3>
-          <div className="mb-4 flex justify-between font-mono text-sm font-regular text-base-950/80 dark:text-base-400 py-2">
+          <div className="mb-4 flex justify-between font-mono text-base text-base-950/80 dark:text-base-400 py-2">
             <p className="mt-0 mb-0">
               {authors.join(", ")} · {date}
             </p>

@@ -26,8 +26,24 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata = {
-  title: "hci index",
-  description: "a practiotioner's guide to hci literature",
+  title: "HCI Index - A Practitioner's Guide to HCI Literature",
+  description:
+    "Explore a curated guide to HCI literature, designed to enhance understanding and spark curiosity in the field of Human-Computer Interaction, made using AI.",
+  creator: "Prateek Solanki",
+  creatorUrl: "https://prateeksolanki.com",
+  keywords: [
+    "HCI",
+    "Human-Computer Interaction",
+    "AI",
+    "User Experience Design",
+    "Interaction Design",
+    "Accessibility",
+    "Social Computing",
+    "Human-AI Collaboration",
+    "Speculative Design",
+    "Ethics in Design",
+  ],
+  referrer: "origin-when-cross-origin",
 };
 
 export default function RootLayout({ children }) {
