@@ -1,4 +1,7 @@
 "use client";
+
+// Credit: https://www.joshwcomeau.com/react/animated-sparkles-in-react/
+
 import React from "react";
 import { useState } from "react";
 import { useTheme } from "next-themes";

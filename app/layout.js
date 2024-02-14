@@ -46,13 +46,12 @@ export const metadata = {
   ],
   referrer: "origin-when-cross-origin",
   openGraph: {
-    images: "/opengraph-image.png", // Make sure the path to your Open Graph image is correct
+    images: "/opengraph-image.png",
   },
   alternates: {
     canonical: "/",
     languages: {
       "en-US": "/en-US",
-      // Add more languages or regions as needed
     },
   },
 };

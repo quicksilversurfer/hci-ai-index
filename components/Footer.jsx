@@ -53,6 +53,16 @@ export default function Footer() {
               * disclaimer
             </Link>
           </li>
+          <li>
+            <a
+              href="https://forms.gle/2JDfkxxqQoj3Ee4b9"
+              className="link-style"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              feedback
+            </a>
+          </li>
         </ul>
       </div>
       <div>
