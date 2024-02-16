@@ -4,7 +4,7 @@ export default async function About() {
   return (
     <main className="text-base-950 dark:text-base-paper grow px-4 sm:px-8 2xl:px-0">
       <h1 className="text-8xl font-display font-medium mt-24">about</h1>
-      <section className="grid grid-cols-12 mt-24 gap-12">
+      <section className="grid grid-cols-12 mt-24 gap-6 sm:gap-12">
         <div className="col-span-12 lg:col-span-6">
           <Image
             src="/about/alto.jpeg"

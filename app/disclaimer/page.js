@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 export default function Disclaimer() {
   return (
-    <main className="flex flex-col px-4 2xl:px-0 grow w-full">
+    <main className="flex flex-col px-4 sm:px-8 2xl:px-0 grow w-full">
       <h1 className="font-display text-8xl mr-4 sm:mr-0 mb-8 mt-24">
         disclaimer
       </h1>
       <h2 className="font-display text-3xl text-pretty max-w-[55ch] text-base-600">
         important information about the ai-generated summaries and their usage
       </h2>
-      <section className="grid grid-cols-12 mt-24 gap-12">
+      <section className="grid grid-cols-12 mt-24 gap-6 sm:gap-12">
         <div className="col-span-12 lg:col-span-6">
           <p className="mt-4 text-base font-sans font-light text-pretty">
             I built this project in my spare time because I'm passionate about
