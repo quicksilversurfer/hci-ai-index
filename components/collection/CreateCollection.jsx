@@ -46,10 +46,19 @@ function DocumentSearch(props) {
   );
 }
 
+function Spinner() {
+  return (
+    <div className="flex justify-center items-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-2 border-base-200 dark:border-base-800 border-t-yellow-light dark:border-t-yellow"></div>
+    </div>
+  );
+}
+
 export default function CreateCollection() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [paperDetails, setPaperDetails] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleQuerySubmit = (e) => {
     handleSubmit(e); // call the original handleSubmit
@@ -60,6 +69,7 @@ export default function CreateCollection() {
 
   const sendCompletionForProcessing = async (genTitle, genDescription) => {
     try {
+      setIsProcessing(true);
       const response = await fetch("/api/processCompletion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,6 +90,8 @@ export default function CreateCollection() {
       // Catch errors
     } catch (error) {
       console.error("Error processing completion:", error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -156,7 +168,20 @@ export default function CreateCollection() {
           </div>
         </div>
       </form>
-      {completion.length === 0 && (
+
+      {/* Loading spinner for both completion generation and paper fetching */}
+      {(isLoading || isProcessing) && (
+        <div className="flex justify-center items-center py-12">
+          <div className="text-center">
+            <Spinner />
+            <p className="mt-4 text-lg font-sans text-base-600 dark:text-base-400">
+              {isLoading ? "Generating collection..." : "Finding papers..."}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {completion.length === 0 && !isLoading && (
         <div className="flex grow font-sans justify-center items-center text-center text-base-500 dark:text-base-700">
           <div className="mx-auto max-w-96 mb-24">
             <DocumentSearch className="w-16 h-16 mx-auto mb-8" />
@@ -206,7 +231,7 @@ export default function CreateCollection() {
           </div>
         </div>
       )}
-      {completion.length > 0 && (
+      {completion.length > 0 && !isLoading && !isProcessing && (
         <Collection variant="generated" title={title} description={description}>
           {paperDetails.papers &&
             paperDetails.papers.length > 0 &&
