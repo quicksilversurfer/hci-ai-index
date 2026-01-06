@@ -41,6 +41,9 @@ importers:
       openai:
         specifier: ^4.25.0
         version: 4.104.0(encoding@0.1.13)(ws@8.19.0)(zod@3.25.76)
+      prop-types:
+        specifier: ^15.8.1
+        version: 15.8.1
       react:
         specifier: ^19.0.0
         version: 19.2.3
