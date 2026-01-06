@@ -1,11 +1,11 @@
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 import { marked } from "marked";
 import PropTypes from "prop-types";
 import SectionHeader from "./SectionHeader";
 
 function renderMarkdown(content) {
   const html = marked.parse(content);
-  return { __html: DOMPurify.sanitize(html) };
+  return { __html: sanitizeHtml(html) };
 }
 
 export default function Synthesis({ content }) {
