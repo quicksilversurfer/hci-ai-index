@@ -6,15 +6,12 @@ const CLOUDFRONT_BASE_URL = "https://d1ra9o23dseopo.cloudfront.net";
 
 // Newsletter functions - server only
 
-async function fetchJson<T>(url: string, tags: string[] = []): Promise<T | null> {
+async function fetchJson<T>(url: string, tags: string[] = [], revalidate: number = 3600): Promise<T | null> {
   try {
     const res = await fetch(url, {
-      cache: 'no-store',
-      headers: {
-        'Accept-Encoding': 'identity', // Bypass stale gzip cache
-      },
+      // cache: 'no-store', // Removed to allow caching
       next: {
-        revalidate: 0, // Cache for 0 seconds (disabled)
+        revalidate, // Default 1 hour
         tags
       }
     });
