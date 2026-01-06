@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 import { marked } from "marked";
 
 import PaperImage from "@/components/papers/PaperImage";
@@ -165,7 +165,7 @@ export default function PaperDetails({
       </a>
     );
   }
-  const htmlSummary = DOMPurify.sanitize(marked.parse(summary));
+  const htmlSummary = sanitizeHtml(marked.parse(summary));
   return (
     <PaperExpanded
       key={uuid}
