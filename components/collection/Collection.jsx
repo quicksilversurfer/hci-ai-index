@@ -61,53 +61,49 @@ export default function Collection({
     <article
       key={uuid}
       className={clsx(
-        "group/collection max-w-full rounded-lg overflow-hidden border-b border-b-base-900/20 relative",
+        "group/collection rounded-lg max-w-full overflow-hidden relative transition-colors",
         { "h-full max-h-[28rem]": variant === "overview" }
       )}
     >
       <div className="relative w-full sm:w-fit after:hidden sm:after:block after:bg-yellow-light dark:after:bg-yellow after:top-0 after:h-full after:rounded-t-md after:w-8 after:absolute after:-right-4 after:skew-x-[30deg]">
-        <h3 className="bg-yellow-light dark:bg-yellow h-full pt-4 px-6 rounded-t-md uppercase font-mono text-base-950">
+        <h3 className="bg-yellow-light dark:bg-yellow h-full pt-4 px-6 rounded-t-md uppercase font-mono text-base-950 text-base">
           {variant === "generated" ? "Generated" : category} /
         </h3>
       </div>
       <div className="bg-yellow-light dark:bg-yellow rounded-md rounded-tr-none sm:rounded-tr-md rounded-tl-none pt-4 h-full">
         <div
           className={clsx(
-            "bg-gradient-to-b from-transparent to-90%  text-base-900 w-full pb-24",
-            variant === "overview" ? "to-base-900/25" : "to-base-900/5"
+            "text-base-900 w-full",
+            variant === "overview" ? "pb-rhythm-4" : "pt-24 pb-24"
           )}
         >
-          <div
-            className={clsx("max-w-screen-xl", {
-              "mt-32 mx-auto": variant === "generated" || variant === "details",
-            })}
-          >
-            <div className="px-6 relative flex flex-col">
+          <div className="w-full max-w-screen-xl mx-auto">
+            <div className="px-6 pt-rhythm-2 relative flex flex-col gap-rhythm-2">
               <h2
                 className={clsx(
-                  "lowercase text-pretty font-display font-medium",
+                  "lowercase text-pretty font-display font-medium text-base-900",
                   variant === "overview"
-                    ? "text-2xl mt-4 mb-2"
-                    : "text-4xl tracking-tight mb-8"
+                    ? "text-2xl"
+                    : "text-4xl leading-tight mb-8"
                 )}
               >
                 {title}
               </h2>
               <p
                 className={clsx(
-                  "text-pretty font-sans",
+                  "text-pretty font-sans text-base-900",
                   variant === "overview"
-                    ? "text-base max-w-prose line-clamp-3"
-                    : "text-lg font-sans mt-6 whitespace-pre-line w-full lg:columns-2"
+                    ? "text-base line-clamp-3 max-w-reading"
+                    : "text-lg font-sans whitespace-pre-line lg:columns-2 gap-12"
                 )}
               >
                 {description}
               </p>
             </div>
 
-            <div className="mt-10 px-6 font-sans">
+            <div className="mt-rhythm-3 px-6 font-sans">
               {variant === "overview" && (
-                <div className="flex flex-col sm:flex-row space-x-4">
+                <div className="flex flex-col sm:flex-row gap-rhythm-2">
                   {children}
                 </div>
               )}
@@ -120,13 +116,7 @@ export default function Collection({
       </div>
 
       <span className="hidden sm:block absolute right-0 top-0 text-[#072ac8] dark:text-[#d0a215] transition duration-700 opacity-0 group-hover/collection:opacity-80 -translate-x-1 translate-y-1 group-hover/collection:translate-x-0 group-hover/collection:translate-y-0">
-        {variant === "overview" ? (
-          <ArrowIcon />
-        ) : variant === "generated" ? null : (
-          <Link href="/">
-            <CloseIcon />
-          </Link>
-        )}
+        {variant === "overview" && <ArrowIcon />}
       </span>
     </article>
   );

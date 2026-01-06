@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { ThemeProvider } from "next-themes";
+import { AnnotationProvider } from "@/contexts/AnnotationContext";
 
 export function Providers({ children }) {
   return (
@@ -9,7 +10,9 @@ export function Providers({ children }) {
       disableTransitionOnChange
       suppressHydrationWarning="true"
     >
-      {children}
+      <AnnotationProvider>
+        {children}
+      </AnnotationProvider>
     </ThemeProvider>
   );
 }

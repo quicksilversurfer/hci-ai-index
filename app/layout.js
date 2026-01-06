@@ -5,8 +5,9 @@ import "@/app/globals.css";
 import { Providers } from "@/app/providers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import LayoutShell from "@/components/LayoutShell";
 
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Public_Sans, Literata } from "next/font/google";
 
 const bespoke = localFont({
   src: "../fonts/BespokeSans-Variable.ttf",
@@ -18,20 +19,36 @@ const supreme = localFont({
   display: "swap",
   variable: "--font-supreme",
 });
+const sabon = localFont({
+  src: "../fonts/Sabon.ttf",
+  display: "swap",
+  variable: "--font-sabon",
+});
 const jetbrains = JetBrains_Mono({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
   variable: "--font-jetbrains",
 });
+const publicSans = Public_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-public-sans",
+});
+const literata = Literata({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-literata",
+});
 
 export const metadata = {
-  metadataBase: new URL("https://hci-ai-index-hxjg.vercel.app/"),
-  title: "HCI Index - A Practitioner's Guide to HCI Literature",
+  metadataBase: new URL("https://hciindex.com/"),
+  title: {
+    default: "HCI Index - A Practitioner's Guide to HCI Literature",
+    template: "%s | HCI Index",
+  },
   description:
     "Explore a curated guide to HCI literature, designed to enhance understanding and spark curiosity in the field of Human-Computer Interaction, made using AI.",
-  creator: "Prateek Solanki",
-  creatorUrl: "https://prateeksolanki.com",
   keywords: [
     "HCI",
     "Human-Computer Interaction",
@@ -44,15 +61,45 @@ export const metadata = {
     "Speculative Design",
     "Ethics in Design",
   ],
-  referrer: "origin-when-cross-origin",
+  authors: [{ name: "Prateek Solanki", url: "https://prateeksolanki.com" }],
+  creator: "Prateek Solanki",
+  publisher: "HCI Index",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    images: "/opengraph-image.png",
+    type: "website",
+    locale: "en_US",
+    url: "https://hciindex.com/",
+    title: "HCI Index - A Practitioner's Guide to HCI Literature",
+    description:
+      "Explore a curated guide to HCI literature, designed to enhance understanding and spark curiosity in the field of Human-Computer Interaction, made using AI.",
+    siteName: "HCI Index",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "HCI Index",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HCI Index",
+    description: "A tailored guide to HCI literature made using AI.",
+    images: ["/opengraph-image.png"],
   },
   alternates: {
     canonical: "/",
-    languages: {
-      "en-US": "/en-US",
-    },
   },
 };
 
@@ -61,19 +108,37 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body
         className={clsx(
-          "h-full w-full min-h-screen flex flex-col antialiased bg-base-paper dark:bg-base-950 mx-auto selection:bg-yellowColl dark:selection:bg-yellow-light",
+          "h-full w-full min-h-screen flex flex-col antialiased bg-base-paper dark:bg-base-950 mx-auto selection:bg-yellowColl dark:selection:bg-yellow-light font-sans text-body-base text-base-900 dark:text-base-100",
           bespoke.variable,
           jetbrains.variable,
-          supreme.variable
+          supreme.variable,
+          sabon.variable,
+          publicSans.variable,
+          literata.variable
         )}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "HCI Index",
+              url: "https://hciindex.com/",
+              description: "A tailored guide to HCI literature made using AI.",
+              author: {
+                "@type": "Person",
+                name: "Prateek Solanki",
+                url: "https://prateeksolanki.com",
+              },
+            }),
+          }}
+        />
         <Providers>
           <Header />
-          <div className="max-w-screen-2xl mx-auto w-full grow flex flex-col">
-            {children} <Footer />
-          </div>
+          <LayoutShell footer={<Footer />}>{children}</LayoutShell>
         </Providers>
       </body>
-    </html>
+    </html >
   );
 }

@@ -3,8 +3,10 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
+import { AnimatePresence, motion } from "framer-motion";
 import SectionHeader from "./SectionHeader";
-import ResearchPaperCard from "@/components/ResearchPaperCard";
+import ArrowButton from "./ArrowButton";
+import ResearchPaperCarousel from "./ResearchPaperCarousel";
 
 export default function StrategicTrends({ trends }) {
   const items = useMemo(
@@ -18,18 +20,23 @@ export default function StrategicTrends({ trends }) {
   );
 
   const [index, setIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  // direction is kept but mostly unused for the vertical slide, 
+  // unless we want to control exit direction. 
+  // For "slide from bottom", we usually just always enter from bottom.
   const [contentReady, setContentReady] = useState(true);
+  const [visited, setVisited] = useState(new Set([0]));
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const current = items[index] || null;
-
-  const stackItems = useMemo(() => {
-    if (!items.length) return [];
-    const visibleCount = Math.min(items.length, 3);
-    return Array.from({ length: visibleCount }, (_, offset) => {
-      const itemIndex = (index + offset) % items.length;
-      return { ...items[itemIndex], stackOffset: offset, itemIndex };
-    });
-  }, [index, items]);
 
   if (!current) return null;
 
@@ -39,9 +46,16 @@ export default function StrategicTrends({ trends }) {
     },
     [items.length]
   );
-  const next = useCallback(() => goTo(index + 1), [goTo, index]);
-  const prev = useCallback(() => goTo(index - 1), [goTo, index]);
-  const [expandedKey, setExpandedKey] = useState(null);
+
+  const next = useCallback(() => {
+    setIndex((prev) => (prev + 1) % items.length);
+  }, [items.length]);
+
+  const prev = useCallback(() => {
+    setIndex((prev) => (prev - 1 + items.length) % items.length);
+  }, [items.length]);
+
+
 
   useEffect(() => {
     setContentReady(false);
@@ -50,8 +64,14 @@ export default function StrategicTrends({ trends }) {
   }, [index]);
 
   useEffect(() => {
-    setExpandedKey(null);
+    setVisited((prev) => {
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
   }, [index]);
+
+
 
   const handleKeyNavigation = useCallback(
     (event) => {
@@ -66,185 +86,145 @@ export default function StrategicTrends({ trends }) {
     [next, prev]
   );
 
+  const containerVariants = {
+    enter: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+    exit: {
+      transition: {
+        staggerChildren: 0.05,
+      },
+    },
+  };
+
+  const itemVariants = {
+    initial: {
+      y: 15,
+      opacity: 0,
+    },
+    enter: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+    exit: {
+      y: -10,
+      opacity: 0,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
+
+
+
   return (
     <section id="strategic-trends" className="space-y-rhythm-4">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <SectionHeader label="STRATEGIC TRENDS" />
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-altSans text-ui uppercase tracking-wide text-flexoki-base-600 dark:text-flexoki-base-400">
-            {index + 1}/{items.length}
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={prev}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-flexoki-base-200 bg-flexoki-base-50 text-flexoki-base-800 shadow-sm transition hover:-translate-y-[1px] hover:border-flexoki-base-400 hover:bg-flexoki-base-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-flexoki-base-700 dark:border-flexoki-base-700 dark:bg-flexoki-base-900 dark:text-flexoki-base-100 dark:hover:border-flexoki-base-600 dark:hover:bg-flexoki-base-850"
-              aria-label="Previous trend"
-            >
-              <span aria-hidden="true">‹</span>
-            </button>
-            <button
-              type="button"
-              onClick={next}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-flexoki-base-200 bg-flexoki-base-50 text-flexoki-base-800 shadow-sm transition hover:-translate-y-[1px] hover:border-flexoki-base-400 hover:bg-flexoki-base-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-flexoki-base-700 dark:border-flexoki-base-700 dark:bg-flexoki-base-900 dark:text-flexoki-base-100 dark:hover:border-flexoki-base-600 dark:hover:bg-flexoki-base-850"
-              aria-label="Next trend"
-            >
-              <span aria-hidden="true">›</span>
-            </button>
-          </div>
+      <div className="flex items-center justify-between gap-4 h-11">
+        <SectionHeader label="Findings" count={items.length} />
+        <div className="flex items-center gap-2">
+          <ArrowButton
+            direction="left"
+            onClick={prev}
+            disabled={items.length <= 1}
+          />
+          <ArrowButton
+            direction="right"
+            onClick={next}
+            disabled={items.length <= 1}
+          />
         </div>
       </div>
 
-      <p className="font-altSans text-base leading-relaxed">
-        {items.map((item, idx) => {
-          const isActive = idx === index;
-          return (
-            <Fragment key={`${item.headline}-${idx}`}>
-              {idx > 0 ? (
-                <span className="px-1 text-flexoki-base-400 dark:text-flexoki-base-600">
-                  ·
+      <div className="font-altSans text-2xl leading-relaxed">
+        {isMobile ? (
+          // Mobile View: Show only current active headline
+          <span className="interactive-link-active transition-colors">
+            {current.headline}
+          </span>
+        ) : (
+          // Desktop View: Show all headlines as clickable list
+          items.map((item, idx) => {
+            const isActive = idx === index;
+            return (
+              <Fragment key={`${item.headline}-${idx}`}>
+                {idx > 0 ? (
+                  <span className="px-2 type-body-smooth opacity-50">
+                    ·
+                  </span>
+                ) : null}
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    goTo(idx);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      goTo(idx);
+                    }
+                  }}
+                  className={clsx(
+                    "inline cursor-pointer whitespace-normal transition-colors outline-none focus-visible:underline",
+                    isActive
+                      ? "interactive-link-active"
+                      : visited.has(idx)
+                        ? "type-body-smooth opacity-30 hover:opacity-100 transition-opacity duration-200"
+                        : "interactive-link-subtle"
+                  )}
+                >
+                  {item.headline}
                 </span>
-              ) : null}
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goTo(idx);
-                }}
-                className={clsx(
-                  "inline text-left transition-colors",
-                  isActive
-                    ? "font-semibold text-flexoki-base-900 dark:text-flexoki-base-50"
-                    : "text-flexoki-base-500 hover:text-flexoki-base-800 dark:text-flexoki-base-500 dark:hover:text-flexoki-base-200"
-                )}
-              >
-                {item.headline}
-              </a>
-              {idx < items.length - 1 ? (
-                <span className="px-[2px]" aria-hidden="true" />
-              ) : null}
-            </Fragment>
-          );
-        })}
-      </p>
+                {idx < items.length - 1 ? (
+                  <span className="px-[1px]" aria-hidden="true" />
+                ) : null}
+              </Fragment>
+            );
+          })
+        )}
+      </div>
 
       <div
-        className="relative mt-12 min-h-[520px]"
+        className="relative mt-8 min-h-[300px]"
         role="region"
         aria-label="Strategic trends carousel"
         tabIndex={0}
         onKeyDown={handleKeyNavigation}
       >
-        <div className="relative h-full min-h-[360px] overflow-visible">
-          {stackItems.map((item) => {
-            const active = item.stackOffset === 0;
-            const offset = item.stackOffset;
-            const translateY = offset * 10;
-            const scale = active ? 1 : 0.98;
-            const paperCount = item.papers?.length || 0;
-            const relatedPapers = item.papers || [];
-            const itemKey = `${item.headline}-${item.itemIndex}`;
-            const showAllPapers = expandedKey === itemKey;
-            const visiblePapers = showAllPapers
-              ? relatedPapers
-              : relatedPapers.slice(0, 4);
-            const moreCount = Math.max(
-              relatedPapers.length - visiblePapers.length,
-              0
-            );
-            const paperContainerClasses = clsx(
-              "flex gap-4 rounded-md border border-flexoki-base-200 bg-white/70 p-4 shadow-sm backdrop-blur-sm dark:border-flexoki-base-700 dark:bg-flexoki-base-900/50 lg:pt-12",
-              showAllPapers
-                ? "flex-wrap overflow-visible"
-                : "flex-nowrap overflow-x-auto",
-              "lg:border-none lg:bg-transparent lg:p-0 lg:shadow-none"
-            );
-            return (
-              <article
-                key={`${item.headline}-${item.itemIndex}`}
-                className={clsx(
-                  "absolute transition duration-500",
-                  active
-                    ? contentReady
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-2"
-                    : "opacity-0"
-                )}
-                style={{
-                  transform: `translateY(${translateY}px) scale(${scale})`,
-                  zIndex: 10 - offset,
-                  pointerEvents: active ? "auto" : "none",
-                }}
-                aria-hidden={!active}
-              >
-                <div className="grid h-full gap-12 lg:grid-cols-[0.85fr_1.25fr] lg:items-start">
-                  <div className="space-y-6">
-                    <div className="mb-6 flex items-center gap-3 text-xs font-altSans">
-                      <span className="inline-flex items-center rounded-full bg-flexoki-base-100 px-3 py-1 font-semibold text-flexoki-base-700 ring-1 ring-flexoki-base-200 dark:bg-flexoki-base-900 dark:text-flexoki-base-200 dark:ring-flexoki-base-700">
-                        Trend {item.itemIndex + 1}
-                      </span>
-                      <span className="text-flexoki-base-500 dark:text-flexoki-base-400">
-                        {paperCount} paper{paperCount === 1 ? "" : "s"}
-                      </span>
-                    </div>
-                    <h3 className="font-altSans text-display-3 font-semibold leading-tight text-flexoki-base-900 dark:text-flexoki-base-50">
-                      {item.headline}
-                    </h3>
-                    <p className="font-altSans text-body-md leading-relaxed text-flexoki-base-800 dark:text-flexoki-base-200">
-                      {item.narrative}
-                    </p>
-                  </div>
-
-                  <div className={paperContainerClasses}>
-                    {relatedPapers.length > 0 ? (
-                      <>
-                        {visiblePapers.map((paper, paperIdx) => {
-                          const url =
-                            paper.url ||
-                            paper.pdf_url ||
-                            (paper.id
-                              ? `https://arxiv.org/abs/${paper.id}`
-                              : "#");
-                          return (
-                            <ResearchPaperCard
-                              key={paper.id || paper.title || paperIdx}
-                              className="min-w-[220px] flex-1"
-                              variant="standard"
-                              arxivId={paper.id}
-                              url={url}
-                              title={paper.title || "Untitled paper"}
-                            />
-                          );
-                        })}
-                        {moreCount > 0 && !showAllPapers ? (
-                          <button
-                            type="button"
-                            onClick={() => setExpandedKey(itemKey)}
-                            className="min-w-[140px] flex-shrink-0 self-stretch rounded-md border border-dashed border-flexoki-base-300 px-4 py-3 text-left text-sm font-semibold text-flexoki-base-700 transition hover:border-flexoki-base-500 hover:bg-flexoki-base-50 dark:border-flexoki-base-700 dark:text-flexoki-base-200 dark:hover:border-flexoki-base-500 dark:hover:bg-flexoki-base-900"
-                          >
-                            +{moreCount} more paper{moreCount === 1 ? "" : "s"}
-                          </button>
-                        ) : null}
-                        {showAllPapers && moreCount > 0 ? (
-                          <button
-                            type="button"
-                            onClick={() => setExpandedKey(null)}
-                            className="min-w-[140px] flex-shrink-0 rounded-md border border-flexoki-base-200 px-3 py-2 text-sm font-medium text-flexoki-base-700 transition hover:-translate-y-[1px] hover:border-flexoki-base-400 hover:bg-flexoki-base-50 dark:border-flexoki-base-700 dark:text-flexoki-base-200 dark:hover:border-flexoki-base-500 dark:hover:bg-flexoki-base-900"
-                          >
-                            Show less
-                          </button>
-                        ) : null}
-                      </>
-                    ) : (
-                      <p className="text-sm text-flexoki-base-500 dark:text-flexoki-base-400">
-                        No linked papers yet.
-                      </p>
-                    )}
-                  </div>
+        <div className="relative h-full overflow-visible">
+          <AnimatePresence initial={false} mode="wait">
+            <motion.article
+              key={index}
+              variants={containerVariants}
+              initial="initial"
+              animate="enter"
+              exit="exit"
+              className="grid h-full gap-6 lg:gap-12 lg:grid-cols-[0.85fr_1.25fr] lg:items-start"
+            >
+              <motion.div className="space-y-4" variants={itemVariants}>
+                <p className="font-altSans text-body-md leading-relaxed type-body-smooth">
+                  {current.narrative}
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="type-label !font-medium opacity-80">
+                    {index + 1}/{items.length}
+                  </span>
                 </div>
-              </article>
-            );
-          })}
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="min-w-0">
+                <ResearchPaperCarousel papers={current.papers} section="Strategic Findings" />
+              </motion.div>
+            </motion.article>
+          </AnimatePresence>
         </div>
       </div>
     </section>

@@ -4,7 +4,7 @@ import OpenAI from "openai";
 
 import { getPapersDetailsByIds } from "@/app/lib/data";
 
-export const runtime = "experimental-edge";
+export const runtime = "edge";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

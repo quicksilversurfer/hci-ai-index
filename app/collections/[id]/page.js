@@ -7,9 +7,10 @@ import Collection from "@/components/collection/Collection";
 import AllCollectionsSkeleton from "@/components/collection/AllCollectionsSkeleton";
 
 export default async function CollectionDetail({ params }) {
-  const collection = await getCollectionDetailsById(params.id);
+  const { id } = await params;
+  const collection = await getCollectionDetailsById(id);
   return (
-    <>
+    <main className="flex flex-col w-full grow pb-content-y pt-content-y">
       <Suspense fallback={<AllCollectionsSkeleton />}>
         <Collection variant="details" {...collection}>
           {collection.papers.map((paper) => (
@@ -27,6 +28,6 @@ export default async function CollectionDetail({ params }) {
           ))}
         </Collection>
       </Suspense>
-    </>
+    </main>
   );
 }

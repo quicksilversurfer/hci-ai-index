@@ -1,15 +1,10 @@
+import clsx from "clsx";
 import { useMemo } from "react";
 import Image from "next/image";
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
 
-function BookImg({ uuid, imgName, title }) {
+
+function BookImg({ uuid, imgName, title, variant }) {
   return (
     <div key={uuid} className="relative h-full w-full">
       <div className="relative inset-0 z-0 transition duration-300 ease-in-out hover:scale-105 shadow-md bg-[#fff] rounded-sm">
@@ -18,19 +13,34 @@ function BookImg({ uuid, imgName, title }) {
           alt={title}
           width={500}
           height={500}
-          className="mt-0 rounded-sm object-fill"
+          className={clsx(
+            "mt-0 rounded-sm w-full",
+            variant === "thumbnail" ? "object-cover h-full" : "object-fill"
+          )}
         />
       </div>
     </div>
   );
 }
 
-function PaperImg({ uuid, imgName, title }) {
-  const rotations = ["-rotate-3", "rotate-1", "rotate-3"];
-  const [rotationClass1, rotationClass2, rotationClass3] = useMemo(
-    () => shuffleArray([...rotations]),
-    []
-  );
+function PaperImg({ uuid, imgName, title, variant }) {
+  /* Deterministic rotation based on UUID to prevent hydration mismatch */
+  const [rotationClass1, rotationClass2, rotationClass3] = useMemo(() => {
+    const rotationsBase = ["-rotate-3", "rotate-1", "rotate-3"];
+    const seed = uuid ? uuid.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
+
+    // Simple deterministic permutation based on seed
+    const permutations = [
+      ["-rotate-3", "rotate-1", "rotate-3"],
+      ["-rotate-3", "rotate-3", "rotate-1"],
+      ["rotate-1", "-rotate-3", "rotate-3"],
+      ["rotate-1", "rotate-3", "-rotate-3"],
+      ["rotate-3", "-rotate-3", "rotate-1"],
+      ["rotate-3", "rotate-1", "-rotate-3"],
+    ];
+
+    return permutations[seed % permutations.length];
+  }, [uuid]);
   const PaperDiv = ({ rotationClass, bgClass }) => (
     <div
       className={`${rotationClass} absolute h-full w-full pb-6 transform rounded-sm border border-base-200 ${bgClass} shadow-md`}
@@ -48,21 +58,24 @@ function PaperImg({ uuid, imgName, title }) {
           alt={title}
           width={500}
           height={500}
-          className="mt-0 rounded-sm object-fill w-full"
+          className={clsx(
+            "mt-0 rounded-sm w-full",
+            variant === "thumbnail" ? "object-cover h-full" : "object-fill"
+          )}
         />
       </div>
     </div>
   );
 }
 
-export default function PaperImage({ uuid, type, imgName, title }) {
+export default function PaperImage({ uuid, type, imgName, title, className, variant = "thumbnail" }) {
   return (
-    <div className="relative w-full max-w-lg self-center">
+    <div className={clsx("relative w-full max-w-lg self-center", variant === "thumbnail" && "h-44", className)}>
       {type === "book" && (
-        <BookImg uuid={uuid} imgName={imgName} title={title} />
+        <BookImg uuid={uuid} imgName={imgName} title={title} variant={variant} />
       )}
       {type === "paper" && (
-        <PaperImg uuid={uuid} imgName={imgName} title={title} />
+        <PaperImg uuid={uuid} imgName={imgName} title={title} variant={variant} />
       )}
     </div>
   );

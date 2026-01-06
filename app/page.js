@@ -1,36 +1,23 @@
-/* eslint-disable react/no-unescaped-entities */
-import Link from "next/link";
+import FeedContainer from "@/components/newsletter-feed/FeedContainer";
+import { getIssueSummaries } from "@/app/lib/feed-data";
 
-import AllCollections from "@/components/collection/AllCollections";
-import AllCollectionsSkeleton from "@/components/collection/AllCollectionsSkeleton";
-import Sparkles from "@/components/Sparkles";
+export default async function NewsletterFeed() {
+  const issues = await getIssueSummaries();
 
-import { Suspense } from "react";
-
-export default function Home() {
   return (
-    <main className="flex flex-col px-4 2xl:px-0 grow max-w-screen-2xl mx-auto">
-      <h1 className="font-display text-8xl mr-4 sm:mr-0 mb-8 mt-24">
-        hci index
-      </h1>
-      <h2 className="font-display text-3xl text-pretty max-w-[55ch] text-base-600 dark:text-base-500">
-        a practiotioner's guide to hci literature — organized to enhance
-        understanding and spark curiosity — made using ai{" "}
-        <span aria-label="Please vist the disclaimer page through a link in the footer">
-          *
-        </span>
-      </h2>
-      <h3 className="text-3xl text-pretty font-display max-w-[55ch] text-base-600 dark:text-base-500 mt-4">
-        browse through the collections below or{" "}
-        <Sparkles>
-          <Link href="/create" className="text-base-300 link-style">
-            generate your own
-          </Link>
-        </Sparkles>
-      </h3>
-      <Suspense fallback={<AllCollectionsSkeleton />}>
-        <AllCollections />
-      </Suspense>
+    <main className="flex flex-col w-full grow pb-content-y">
+      <header className="page-header pb-rhythm-6 content-shell px-4 lg:px-6 mt-8">
+        <h1 className="font-display text-display-1 tracking-tight text-base-950 dark:text-base-50">
+          hci index
+        </h1>
+        <p className="font-altSans text-display-4 font-light text-pretty max-w-4xl text-base-700 dark:text-base-300">
+          curated weekly summaries of the latest HCI papers from arXiv — concise
+          synopses, actionable insights, and critical takeaways to keep
+          researchers, designers, and practitioners informed
+        </p>
+      </header>
+
+      <FeedContainer issues={issues} />
     </main>
   );
 }

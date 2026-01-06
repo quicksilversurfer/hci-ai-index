@@ -63,7 +63,7 @@ export default function Sparkles({
           style={sparkle.style}
         />
       ))}
-      <span style={{ color }} className="relative z-10">
+      <span className="relative z-10">
         {children}
       </span>
     </span>

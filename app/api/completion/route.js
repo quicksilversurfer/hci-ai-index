@@ -1,19 +1,15 @@
-import OpenAI from "openai";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { openai } from "@ai-sdk/openai";
+import { streamText } from "ai";
 
 export const runtime = "edge";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req) {
   // Extract the `prompt` from the body of the request
   const { prompt } = await req.json();
 
-  // Request the OpenAI API for the response based on the prompt
-  const response = await openai.chat.completions.create({
-    model: "gpt-4-0125-preview",
-    stream: true,
-    // a precise prompt is important for the AI to reply with the correct tokens
+  // Use the streamText function from the new AI SDK
+  const result = streamText({
+    model: openai("gpt-4-0125-preview"),
     messages: [
       {
         role: "user",
@@ -39,14 +35,12 @@ User Query: Post content: ${prompt}
         Output:\n`,
       },
     ],
-    max_tokens: 360,
+    maxTokens: 360,
     temperature: 0.5,
-    top_p: 1,
-    frequency_penalty: 1,
-    presence_penalty: 1,
+    topP: 1,
+    frequencyPenalty: 1,
+    presencePenalty: 1,
   });
 
-  const stream = OpenAIStream(response);
-
-  return new StreamingTextResponse(stream);
+  return result.toDataStreamResponse();
 }

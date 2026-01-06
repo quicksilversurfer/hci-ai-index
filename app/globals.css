@@ -3,6 +3,136 @@
 @tailwind utilities;
 
 :root {
+  --shadow-paper-soft: 0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+    0px 1px 2px -1px rgba(0, 0, 0, 0.06), 0px 2px 4px 0px rgba(0, 0, 0, 0.04);
+  --shadow-paper-soft-dark: 0px 0px 0px 1px rgba(255, 255, 255, 0.05),
+    0px 1px 2px rgba(0, 0, 0, 0.2), 0px 4px 12px rgba(0, 0, 0, 0.22);
+
+  --content-padding-x: 32px;
+  --content-padding-y: 64px;
+  --reading-max-width: 72ch;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+  --space-5: 64px;
+  --space-6: 96px;
+
+  --bg-card: #fefefe;
+  /* paper-soft */
+  /* Responsive Type Scale Configuration */
+  --viewport-small: 320;
+  --viewport-large: 1500;
+  --base-size-small: 1.25;
+  /* 20px */
+  --base-size-large: 1.4375;
+  /* 23px */
+  --scale-at-small: 1.2;
+  --scale-at-large: 1.25;
+  --px-per-rem: 16;
+  --_viewport-delta: calc(var(--viewport-large) - var(--viewport-small));
+
+  /* Step 0 - Body Base */
+  --_small-step-0: var(--base-size-small);
+  --_large-step-0: var(--base-size-large);
+  --_m-step-0: calc((var(--_large-step-0) - var(--_small-step-0)) / var(--_viewport-delta));
+  --_b-step-0: calc(var(--_small-step-0) - var(--_m-step-0) * var(--viewport-small));
+  --step-0: clamp(var(--_small-step-0) * 1rem,
+      var(--_m-step-0) * 100vw * var(--px-per-rem) + var(--_b-step-0) * 1rem,
+      var(--_large-step-0) * 1rem);
+
+  /* Step 1 - Body XL */
+  --_small-step-1: var(--_small-step-0) * var(--scale-at-small);
+  --_large-step-1: var(--_large-step-0) * var(--scale-at-large);
+  --_m-step-1: calc((var(--_large-step-1) - var(--_small-step-1)) / var(--_viewport-delta));
+  --_b-step-1: calc(var(--_small-step-1) - var(--_m-step-1) * var(--viewport-small));
+  --step-1: clamp(var(--_small-step-1) * 1rem,
+      var(--_m-step-1) * 100vw * var(--px-per-rem) + var(--_b-step-1) * 1rem,
+      var(--_large-step-1) * 1rem);
+
+  /* Step 2 - Display 3 */
+  --_small-step-2: var(--_small-step-1) * var(--scale-at-small);
+  --_large-step-2: var(--_large-step-1) * var(--scale-at-large);
+  --_m-step-2: calc((var(--_large-step-2) - var(--_small-step-2)) / var(--_viewport-delta));
+  --_b-step-2: calc(var(--_small-step-2) - var(--_m-step-2) * var(--viewport-small));
+  --step-2: clamp(var(--_small-step-2) * 1rem,
+      var(--_m-step-2) * 100vw * var(--px-per-rem) + var(--_b-step-2) * 1rem,
+      var(--_large-step-2) * 1rem);
+
+  /* Step 3 - Display 2 */
+  --_small-step-3: var(--_small-step-2) * var(--scale-at-small);
+  --_large-step-3: var(--_large-step-2) * var(--scale-at-large);
+  --_m-step-3: calc((var(--_large-step-3) - var(--_small-step-3)) / var(--_viewport-delta));
+  --_b-step-3: calc(var(--_small-step-3) - var(--_m-step-3) * var(--viewport-small));
+  --step-3: clamp(var(--_small-step-3) * 1rem,
+      var(--_m-step-3) * 100vw * var(--px-per-rem) + var(--_b-step-3) * 1rem,
+      var(--_large-step-3) * 1rem);
+
+  /* Step 4 - Display 1 */
+  --_small-step-4: var(--_small-step-3) * var(--scale-at-small);
+  --_large-step-4: var(--_large-step-3) * var(--scale-at-large);
+  --_m-step-4: calc((var(--_large-step-4) - var(--_small-step-4)) / var(--_viewport-delta));
+  --_b-step-4: calc(var(--_small-step-4) - var(--_m-step-4) * var(--viewport-small));
+  --step-4: clamp(var(--_small-step-4) * 1rem,
+      var(--_m-step-4) * 100vw * var(--px-per-rem) + var(--_b-step-4) * 1rem,
+      var(--_large-step-4) * 1rem);
+
+  /* Step 5 - Display 0 */
+  --_small-step-5: var(--_small-step-4) * var(--scale-at-small);
+  --_large-step-5: var(--_large-step-4) * var(--scale-at-large);
+  --_m-step-5: calc((var(--_large-step-5) - var(--_small-step-5)) / var(--_viewport-delta));
+  --_b-step-5: calc(var(--_small-step-5) - var(--_m-step-5) * var(--viewport-small));
+  --step-5: clamp(var(--_small-step-5) * 1rem,
+      var(--_m-step-5) * 100vw * var(--px-per-rem) + var(--_b-step-5) * 1rem,
+      var(--_large-step-5) * 1rem);
+
+  /* Step 6 - Display Hero */
+  --_small-step-6: var(--_small-step-5) * var(--scale-at-small);
+  --_large-step-6: var(--_large-step-5) * var(--scale-at-large);
+  --_m-step-6: calc((var(--_large-step-6) - var(--_small-step-6)) / var(--_viewport-delta));
+  --_b-step-6: calc(var(--_small-step-6) - var(--_m-step-6) * var(--viewport-small));
+  --step-6: clamp(var(--_small-step-6) * 1rem,
+      var(--_m-step-6) * 100vw * var(--px-per-rem) + var(--_b-step-6) * 1rem,
+      var(--_large-step-6) * 1rem);
+
+  /* Step -1 - Body MD */
+  --_small-step--1: var(--_small-step-0) / var(--scale-at-small);
+  --_large-step--1: var(--_large-step-0) / var(--scale-at-large);
+  --_m-step--1: calc((var(--_large-step--1) - var(--_small-step--1)) / var(--_viewport-delta));
+  --_b-step--1: calc(var(--_small-step--1) - var(--_m-step--1) * var(--viewport-small));
+  --step--1: clamp(var(--_small-step--1) * 1rem,
+      var(--_m-step--1) * 100vw * var(--px-per-rem) + var(--_b-step--1) * 1rem,
+      var(--_large-step--1) * 1rem);
+
+  /* Step -1.5 - Body Intermediate */
+  --_small-step--1-5: calc((var(--_small-step--1) + var(--_small-step--2)) / 2);
+  --_large-step--1-5: calc((var(--_large-step--1) + var(--_large-step--2)) / 2);
+  --_m-step--1-5: calc((var(--_large-step--1-5) - var(--_small-step--1-5)) / var(--_viewport-delta));
+  --_b-step--1-5: calc(var(--_small-step--1-5) - var(--_m-step--1-5) * var(--viewport-small));
+  --step--1-5: clamp(var(--_small-step--1-5) * 1rem,
+      var(--_m-step--1-5) * 100vw * var(--px-per-rem) + var(--_b-step--1-5) * 1rem,
+      var(--_large-step--1-5) * 1rem);
+
+  /* Step -2 - Body SM / UI */
+  --_small-step--2: var(--_small-step--1) / var(--scale-at-small);
+  --_large-step--2: var(--_large-step--1) / var(--scale-at-large);
+  --_m-step--2: calc((var(--_large-step--2) - var(--_small-step--2)) / var(--_viewport-delta));
+  --_b-step--2: calc(var(--_small-step--2) - var(--_m-step--2) * var(--viewport-small));
+  --step--2: clamp(var(--_small-step--2) * 1rem,
+      var(--_m-step--2) * 100vw * var(--px-per-rem) + var(--_b-step--2) * 1rem,
+      var(--_large-step--2) * 1rem);
+
+  /* Step -3 - Body XS / Meta */
+  --_small-step--3: var(--_small-step--2) / var(--scale-at-small);
+  --_large-step--3: var(--_large-step--2) / var(--scale-at-large);
+  --_m-step--3: calc((var(--_large-step--3) - var(--_small-step--3)) / var(--_viewport-delta));
+  --_b-step--3: calc(var(--_small-step--3) - var(--_m-step--3) * var(--viewport-small));
+  --step--3: clamp(var(--_small-step--3) * 1rem,
+      var(--_m-step--3) * 100vw * var(--px-per-rem) + var(--_b-step--3) * 1rem,
+      var(--_large-step--3) * 1rem);
+}
+
+:root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -10,59 +140,320 @@
   --link-color-dark: #d0a215;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  --bg-card: #343331;
+  /* base-850 */
+}
+
+@layer components {
+
+  /* Links */
+  .link-style {
+    text-decoration: none;
+    position: relative;
+    font-family: var(--font-supreme), var(--font-bespoke), system-ui, -apple-system,
+      sans-serif;
+    letter-spacing: 0.025em;
+    font-weight: 400;
+    @apply transition-colors duration-200;
   }
-}
 
-/* Links */
-.link-style {
-  text-decoration: none;
-  position: relative;
-}
+  .link-style::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: top right;
+    transition: transform 0.3s ease;
+    background-color: currentColor;
+  }
 
-.link-style::before {
-  content: "";
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 1px;
-  bottom: -2px;
-  left: 0;
-  transform: scaleX(0);
-  transform-origin: top right;
-  transition: transform 0.3s ease;
-}
+  .link-style:hover::before {
+    transform: scaleX(1);
+    transform-origin: top left;
+  }
 
-.link-style:hover::before {
-  transform: scaleX(1);
-  transform-origin: top left;
-  background-color: var(--link-color-light);
-}
-
-.light .link-style {
-  color: var(--link-color-light);
-}
-
-.light .link-style::before {
-  background-color: var(--link-color-light);
-}
-
-.dark .link-style {
-  color: var(--link-color-dark);
-}
-
-.dark .link-style::before {
-  background-color: var(--link-color-dark);
+  .link-style {
+    @apply text-[#072ac8] dark:text-[#d0a215];
+  }
 }
 
 /* Summary */
 .summary strong {
   font-weight: 590;
 }
+
 .summary li {
   margin-bottom: 1rem;
+}
+
+/* Newsletter Card with Stamp Edges (Top/Bottom Only) */
+.newsletter-card {
+  --tooth-width: 12px;
+  --tooth-height: 6px;
+  --bg-color: var(--bg-card);
+
+  background-color: transparent;
+  background-image:
+    /* Top Ridge */
+    radial-gradient(circle at 50% 0px, transparent 4px, var(--bg-color) 4.5px),
+    /* Bottom Ridge */
+    radial-gradient(circle at 50% 100%, transparent 4px, var(--bg-color) 4.5px),
+    /* Body */
+    linear-gradient(var(--bg-color), var(--bg-color));
+
+  background-size:
+    var(--tooth-width) var(--tooth-height),
+    var(--tooth-width) var(--tooth-height),
+    100% calc(100% - var(--tooth-height) * 2 + 1px);
+  /* +1px overlap to prevent gaps */
+
+  background-position:
+    top left,
+    bottom left,
+    center;
+
+  background-repeat:
+    repeat-x,
+    repeat-x,
+    no-repeat;
+
+  /* Retain side borders as straight lines if needed, but the gradient body handles the fill */
+  @apply border-x border-base-200 dark:border-base-850;
+
+  /* Shadow */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.06)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.04));
+}
+
+.dark .newsletter-card {
+  --bg-color: #21201d;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.22));
+}
+
+@layer utilities {
+  .shadow-paper-soft {
+    box-shadow: var(--shadow-paper-soft);
+  }
+
+  .dark .shadow-paper-soft {
+    box-shadow: var(--shadow-paper-soft-dark);
+  }
+
+  .content-shell {
+    @apply w-full max-w-content mx-auto;
+  }
+
+  .page-header {
+    @apply space-y-3 sm:space-y-4 pt-content-y;
+  }
+
+  .reading-width {
+    max-width: var(--reading-max-width);
+  }
+
+  .card-surface {
+    @apply border border-base-200/80 dark:border-base-800/70 bg-base-50/60 dark:bg-base-900/40 rounded-lg;
+  }
+
+  /* Month bands styled with Flexoki palette (light and dark) */
+  /* Mesh Morphing Backgrounds & Noise */
+  .noise-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.15;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    background-repeat: repeat;
+  }
+
+  /* Grain texture overlay using feTurbulence for organic noise (CSS-Tricks technique) */
+  .grain-texture {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .grain-texture::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+  }
+
+  .dark .grain-texture::before {
+    opacity: 0.15;
+  }
+
+  /* Subtle variant for larger areas like page backgrounds */
+  .grain-subtle {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .grain-subtle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.3;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+  }
+
+  .dark .grain-subtle::before {
+    opacity: 0.1;
+  }
+
+  /* Fix masking for newsletter card with grain to respect ridge shape */
+  .newsletter-card.grain-subtle::before,
+  .newsletter-card.grain-texture::before {
+    -webkit-mask-image:
+      radial-gradient(circle at 50% 0px, transparent 4px, black 4.5px),
+      radial-gradient(circle at 50% 100%, transparent 4px, black 4.5px),
+      linear-gradient(black, black);
+    mask-image:
+      radial-gradient(circle at 50% 0px, transparent 4px, black 4.5px),
+      radial-gradient(circle at 50% 100%, transparent 4px, black 4.5px),
+      linear-gradient(black, black);
+    -webkit-mask-size:
+      var(--tooth-width) var(--tooth-height),
+      var(--tooth-width) var(--tooth-height),
+      100% calc(100% - var(--tooth-height) * 2 + 1px);
+    mask-size:
+      var(--tooth-width) var(--tooth-height),
+      var(--tooth-width) var(--tooth-height),
+      100% calc(100% - var(--tooth-height) * 2 + 1px);
+    -webkit-mask-position:
+      top left,
+      bottom left,
+      center;
+    mask-position:
+      top left,
+      bottom left,
+      center;
+    -webkit-mask-repeat:
+      repeat-x,
+      repeat-x,
+      no-repeat;
+    mask-repeat:
+      repeat-x,
+      repeat-x,
+      no-repeat;
+  }
+
+  /* Each month gets a unique mesh surface inspired by organic shapes */
+  .month-surface {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .month-surface-JANUARY {
+    background-color: #273D5E;
+  }
+
+  .month-surface-FEBRUARY {
+    background-color: #44606E;
+  }
+
+  .month-surface-MARCH {
+    background-color: #074F51;
+  }
+
+  .month-surface-APRIL {
+    background-color: #51B2BD;
+  }
+
+  .month-surface-MAY {
+    background-color: #F6BA7F;
+  }
+
+  .month-surface-JUNE {
+    background-color: #FF8561;
+  }
+
+  .month-surface-JULY {
+    background-color: #F8DA00;
+  }
+
+  .month-surface-AUGUST {
+    background-color: #FF838B;
+  }
+
+  .month-surface-SEPTEMBER {
+    background-color: #44606E;
+  }
+
+  .month-surface-OCTOBER {
+    background-color: #5A73A4;
+  }
+
+  .month-surface-NOVEMBER {
+    background-color: #7C6C76;
+  }
+
+  .month-surface-DECEMBER {
+    background-color: #3388A9;
+  }
+
+  .type-body-strong {
+    @apply text-hci-primary dark:text-flexoki-base-50 leading-snug;
+  }
+
+  .type-body-smooth {
+    @apply text-hci-secondary dark:text-flexoki-base-300 leading-relaxed;
+  }
+
+  .type-label-base {
+    @apply font-altSans font-bold uppercase tracking-wider;
+  }
+
+  .type-label {
+    @apply type-label-base text-ui text-base-600 dark:text-flexoki-base-400;
+  }
+
+  /* For the purely mono-spaced variant if needed, or specific overrides */
+  .type-label-mono {
+    @apply font-mono text-ui uppercase tracking-widest text-base-600 dark:text-flexoki-base-400;
+  }
+
+  .border-subtle {
+    @apply border-base-200 dark:border-base-800;
+  }
+
+  .interactive-link-subtle {
+    @apply type-body-smooth opacity-60 hover:opacity-100 transition-opacity duration-200;
+  }
+
+  /* Active state for the interactive link (overriding opacity) */
+  .interactive-link-active {
+    @apply type-body-strong opacity-100;
+  }
+}
+
+/* Custom Selection Styles */
+.dark ::selection {
+  background-color: #d0a215;
+  /* Brand yellow for dark mode */
+  color: #1C1B1A;
+  /* Dark text for contrast */
 }

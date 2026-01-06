@@ -1,5 +1,8 @@
-/* eslint-disable react/no-unescaped-entities */
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
+import clsx from "clsx";
 
 function HeartIcon(props) {
   return (
@@ -14,64 +17,43 @@ function HeartIcon(props) {
   );
 }
 
-function SparklesIcon(props) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      {...props}
-    >
-      <path d="M15.98 1.804a1 1 0 0 0-1.96 0l-.24 1.192a1 1 0 0 1-.784.785l-1.192.238a1 1 0 0 0 0 1.962l1.192.238a1 1 0 0 1 .785.785l.238 1.192a1 1 0 0 0 1.962 0l.238-1.192a1 1 0 0 1 .785-.785l1.192-.238a1 1 0 0 0 0-1.962l-1.192-.238a1 1 0 0 1-.785-.785l-.238-1.192ZM6.949 5.684a1 1 0 0 0-1.898 0l-.683 2.051a1 1 0 0 1-.633.633l-2.051.683a1 1 0 0 0 0 1.898l2.051.684a1 1 0 0 1 .633.632l.683 2.051a1 1 0 0 0 1.898 0l.683-2.051a1 1 0 0 1 .633-.633l2.051-.683a1 1 0 0 0 0-1.898l-2.051-.683a1 1 0 0 1-.633-.633L6.95 5.684ZM13.949 13.684a1 1 0 0 0-1.898 0l-.184.551a1 1 0 0 1-.632.633l-.551.183a1 1 0 0 0 0 1.898l.551.183a1 1 0 0 1 .633.633l.183.551a1 1 0 0 0 1.898 0l.184-.551a1 1 0 0 1 .632-.633l.551-.183a1 1 0 0 0 0-1.898l-.551-.184a1 1 0 0 1-.633-.632l-.183-.551Z" />
-    </svg>
-  );
-}
+
 
 export default function Footer() {
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const linkColor =
+    mounted &&
+    (theme === "light" ? "!text-[#072ac8]" : "!text-[#d0a215]");
+
   return (
-    <footer className="flex flex-col sm:flex-row justify-between border-t border-t-base-500 mt-24 mb-12 font-display pt-4 mx-4 sm:mx-8 2xl:mx-0">
-      <div>
-        <ul className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-8 pb-8 sm:pb-0">
-          <li>
-            project by{" "}
-            <a href="https://www.prateeksolanki.com/" className="link-style">
-              prateek solanki
-            </a>
-          </li>
-          <li>
-            <Link href="/allWorks" className="link-style">
-              all works
-            </Link>
-          </li>
-          <li>
-            <Link href="/about" className="link-style">
+    <footer className="w-full mt-24 font-supreme text-lg tracking-wide text-base-500 dark:text-base-400">
+      <div className="border-t border-t-base-200 dark:border-t-base-800 bg-background dark:bg-base-950/50">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 2xl:px-0 py-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-8">
+          <div>
+            <Link
+              href="/about"
+              className={clsx("link-style", linkColor)}
+            >
               about
             </Link>
-          </li>
-          <li>
-            <Link href="/disclaimer" className="link-style">
-              * disclaimer
-            </Link>
-          </li>
-          <li>
+          </div>
+          <div className="flex flex-row items-center gap-1 text-sm sm:text-lg">
+            <span>by</span>
             <a
-              href="https://forms.gle/2JDfkxxqQoj3Ee4b9"
-              className="link-style"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="https://www.prateeksolanki.com/"
+              className={clsx("link-style", linkColor)}
             >
-              feedback
+              prateek solanki
             </a>
-          </li>
-        </ul>
-      </div>
-      <div>
-        <p className="w-fit inline-flex">
-          built with{" "}
-          <HeartIcon className="mt-1 ml-1 mr-1 inline-block w-4 h-4 text-red" />{" "}
-          &{" "}
-          <SparklesIcon className="mt-1 ml-1 inline-block w-4 h-4 text-yellow-light" />
-        </p>
+            <HeartIcon className="mx-1 inline-block w-4 h-4 text-flexoki-red-600 dark:text-flexoki-red-400" />
+          </div>
+        </div>
       </div>
     </footer>
   );

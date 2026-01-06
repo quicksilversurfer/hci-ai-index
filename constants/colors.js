@@ -1,0 +1,15 @@
+export const MONTH_THEMES = {
+  January: "bg-[#f8f9fa] border-[#e9ecef] text-neutral-900",
+  February: "bg-[#c2e0ff] border-[#9bc2f5] text-blue-900",
+  March: "bg-[#f5deb3] border-[#e6c488] text-neutral-900",
+  April: "bg-[#8fbf8c] border-[#6b9f69] text-neutral-900",
+  May: "bg-[#d8c8ff] border-[#b6a8e8] text-neutral-900",
+  June: "bg-[#c0c0c0] border-[#9a9a9a] text-neutral-900",
+  July: "bg-[#d2691e] border-[#a45217] text-white",
+  August: "bg-[#fd7e14] border-[#e67e22] text-white",
+  September: "bg-[#ffc107] border-[#ffb300] text-neutral-900",
+  October: "bg-[#005c4b] border-[#004d40] text-white",
+  November: "bg-[#b9e0f7] border-[#8ac5e8] text-blue-900",
+  December: "bg-[#d4edda] border-[#c3e6cb] text-green-900",
+  default: "bg-base-100 border-base-200 text-base-900",
+};

@@ -1,7 +1,11 @@
+'use client';
+
+import { useRef } from 'react';
 import DOMPurify from "isomorphic-dompurify";
 import { marked } from "marked";
 
 import PaperImage from "@/components/papers/PaperImage";
+import TextSelectionShare from "@/components/ui/TextSelectionShare";
 
 function ArrowIcon(props) {
   return (
@@ -53,8 +57,10 @@ function PaperExpanded({
   imgType,
   imgId,
 }) {
+  const contentRef = useRef(null);
+
   return (
-    <div key={uuid} className="flex flex-col lg:flex-row-reverse my-24">
+    <div key={uuid} className="flex flex-col lg:flex-row-reverse my-24 break-inside-avoid">
       <a
         href={link}
         target="_blank"
@@ -67,19 +73,19 @@ function PaperExpanded({
             type={imgType}
             imgName={imgName}
             title={title}
+            variant="full"
+            className="max-w-lg"
           />
         </div>
       </a>
       <div className="marker:text-base-800 dark:marker:text-base-300 grow self-center group mt-12 lg:mt-0">
-        <div className="w-full lg:max-w-prose">
+        <div ref={contentRef} className="w-full lg:max-w-lg relative">
           <h3 className="mb-4 font-display font-medium text-2xl text-base-900 dark:text-base-950 3xl:mt-0 text-pretty">
             {title}
           </h3>
-          <div className="mb-4 flex justify-between font-mono text-base text-base-950/80 dark:text-base-400 py-2">
-            <p className="mt-0 mb-0">
-              {authors.join(", ")} · {date}
-            </p>
-          </div>
+          <p className="mb-4 font-mono text-base text-base-950/80 py-2 mt-0">
+            {authors.join(", ")} · {date}
+          </p>
           <div className="text-base space-y-4">
             <div
               className="space-y-4 summary"
@@ -98,6 +104,7 @@ function PaperExpanded({
 
             <ChevronRightIcon className="ml-1 text-base-900 w-3 h-3 mt-1 group-hover/link:text-base-paper" />
           </a>
+          <TextSelectionShare targetRef={contentRef} paperTitle={title} />
         </div>
       </div>
     </div>
@@ -107,11 +114,11 @@ function PaperExpanded({
 function PaperOverview({ title, authors, date }) {
   return (
     <div className="flex flex-col grow pr-4 break-after-auto">
-      <h3 className="font-display font-medium leading-snug text-lg text-base-900 dark:text-base-paper 3xl:mt-0 text-pretty lowercase group-hover:text-[#072ac8] dark:group-hover:text-[#d0a215] transition duration-700">
+      <h3 className="font-display font-medium leading-snug text-body-base text-base-900 dark:text-base-paper 3xl:mt-0 text-pretty lowercase group-hover:text-[#072ac8] dark:group-hover:text-[#d0a215] transition duration-700">
         {title}
       </h3>
-      <div className="mb-4 flex justify-between font-mono text-sm font-regular py-1">
-        <p className="mt-0 mb-0 text-base-950/80 dark:text-base-300">
+      <div className="mb-4 flex justify-between font-mono text-body-intermediate font-regular py-1">
+        <p className="mt-0 mb-0 text-base-800 dark:text-base-300">
           {authors.join(", ")} · {date}
         </p>
       </div>
@@ -149,7 +156,7 @@ export default function PaperDetails({
         href={link}
         target="_blank"
         rel="noopener noreferrer"
-        className="relative group flex flex-row"
+        className="relative group flex flex-row break-inside-avoid"
       >
         <PaperOverview title={title} authors={authors} date={date} />
         <span className="mt-1 text-[#072ac8] dark:text-[#d0a215] transition duration-700 opacity-0 group-hover:opacity-80 -translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0">

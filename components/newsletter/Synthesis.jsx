@@ -13,8 +13,8 @@ export default function Synthesis({ content }) {
     <section id="synthesis" className="space-y-rhythm-2">
       {/* <SectionHeader label="SYNTHESIS" className="max-w-3xl w-full mx-auto" /> */}
       <div
-        className="max-w-reading mx-auto font-altSans text-base-800 dark:text-base-100 space-y-rhythm-2 text-left text-body-lg"
-        dangerouslySetInnerHTML={renderMarkdown(content)}
+        className="max-w-reading mx-auto space-y-rhythm-2 text-left font-altSans text-body-md leading-relaxed type-body-smooth [&>p]:indent-8"
+        dangerouslySetInnerHTML={renderMarkdown(content || "")}
       />
     </section>
   );
@@ -23,3 +23,5 @@ export default function Synthesis({ content }) {
 Synthesis.propTypes = {
   content: PropTypes.string.isRequired,
 };
+
+Synthesis.defaultProps = {};
