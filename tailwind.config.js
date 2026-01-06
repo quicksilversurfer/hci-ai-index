@@ -16,8 +16,17 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       fontFamily: {
-        display: ["var(--font-supreme)", ...defaultTheme.fontFamily.sans],
-        sans: ["var(--font-bespoke)", ...defaultTheme.fontFamily.sans],
+        display: [
+          "Public Sans",
+          "var(--font-supreme)",
+          ...defaultTheme.fontFamily.sans,
+        ],
+        sans: [
+          "Public Sans",
+          "var(--font-bespoke)",
+          ...defaultTheme.fontFamily.sans,
+        ],
+        serif: ["Literata", ...defaultTheme.fontFamily.serif],
         mono: ["var(--font-jetbrains)", ...defaultTheme.fontFamily.serif],
       },
       boxShadow: {
