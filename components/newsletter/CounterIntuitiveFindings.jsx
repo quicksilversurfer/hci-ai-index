@@ -118,18 +118,23 @@ export default function CounterIntuitiveFindings({ findings }) {
   return (
     <section id="counter-intuitive-findings" className="space-y-rhythm-4">
       <div className="flex items-center justify-between gap-4 h-11">
-        <SectionHeader label="Surprises" count={items.length} />
-        <div className="flex items-center gap-2">
-          <ArrowButton
-            direction="left"
-            onClick={prev}
-            disabled={items.length <= 1}
-          />
-          <ArrowButton
-            direction="right"
-            onClick={next}
-            disabled={items.length <= 1}
-          />
+        <SectionHeader
+          label="Surprises"
+          count={`${index + 1}/${items.length}`}
+        />
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <ArrowButton
+              direction="left"
+              onClick={prev}
+              disabled={items.length <= 1}
+            />
+            <ArrowButton
+              direction="right"
+              onClick={next}
+              disabled={items.length <= 1}
+            />
+          </div>
         </div>
       </div>
 
@@ -184,7 +189,7 @@ export default function CounterIntuitiveFindings({ findings }) {
       </div>
 
       <div
-        className="relative mt-8 min-h-[300px]"
+        className="relative !mt-4 lg:!mt-8 min-h-[300px]"
         role="region"
         aria-label="Counter-intuitive findings carousel"
         tabIndex={0}
@@ -204,11 +209,7 @@ export default function CounterIntuitiveFindings({ findings }) {
                 <p className="font-altSans text-body-md leading-relaxed type-body-smooth">
                   {current.narrative}
                 </p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="type-label !font-medium opacity-80">
-                    {index + 1}/{items.length}
-                  </span>
-                </div>
+
               </motion.div>
 
               <motion.div variants={itemVariants} className="min-w-0">

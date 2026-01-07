@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,8 +14,6 @@ export default function FeaturedPapers({ papers }) {
   const CARD_HEIGHT = Math.round(CARD_BASE_WIDTH * CARD_RATIO);
   const CONTAINER_HEIGHT = CARD_HEIGHT + 120;
   const [index, setIndex] = useState(0);
-
-  const [direction, setDirection] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const count = papers.length;
   const showArrows = count > 1;
@@ -58,7 +56,6 @@ export default function FeaturedPapers({ papers }) {
   const paginate = useCallback(
     (newDirection) => {
       if (!count) return;
-      setDirection(newDirection);
       setIndex((prevIndex) => {
         let nextIndex = prevIndex + newDirection;
         if (nextIndex < 0) nextIndex = count - 1;
@@ -85,13 +82,6 @@ export default function FeaturedPapers({ papers }) {
     [next, prev]
   );
 
-  const swipeConfidenceThreshold = 10000;
-  const swipePower = (offset, velocity) => {
-    return Math.abs(offset) * velocity;
-  };
-
-  const currentPaper = papers[index];
-
   // Stack calculation (Desktop Only)
   const visibleItems = [];
   if (!isMobile) {
@@ -105,31 +95,84 @@ export default function FeaturedPapers({ papers }) {
     }
   }
 
-  // Mobile variants
-  const mobileVariants = {
-    enter: (direction) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-      scale: 0.95,
-    }),
-    center: {
-      zIndex: 1,
-      x: 0,
-      opacity: 1,
-      scale: 1,
-    },
-    exit: (direction) => ({
-      zIndex: 0,
-      x: direction < 0 ? 300 : -300,
-      opacity: 0,
-      scale: 0.95,
-    }),
+  const mobileScrollRef = useRef(null);
+
+  // Track if we are programmatically scrolling
+  const isScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef(null);
+
+  // Sync scroll position when index changes (e.g. via arrows)
+  useEffect(() => {
+    if (isMobile && mobileScrollRef.current) {
+      const container = mobileScrollRef.current;
+      const cardWidth = container.clientWidth;
+      const targetScroll = index * cardWidth;
+
+      // Calculate distance to determine if we need to scroll
+      if (Math.abs(container.scrollLeft - targetScroll) > 5) {
+        // Mark as scrolling programmatically
+        isScrollingRef.current = true;
+
+        container.scrollTo({
+          left: targetScroll,
+          behavior: "smooth",
+        });
+
+        // Clear existing timeout
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+
+        // Reset scrolling flag after animation finishes
+        scrollTimeoutRef.current = setTimeout(() => {
+          isScrollingRef.current = false;
+        }, 500); // Wait long enough for smooth scroll to complete
+      }
+    }
+  }, [index, isMobile]);
+
+  const handleMobileScroll = () => {
+    // Ignore scroll events triggered by our own programmatic scroll
+    if (isScrollingRef.current) return;
+
+    if (mobileScrollRef.current) {
+      const container = mobileScrollRef.current;
+      const cardWidth = container.clientWidth;
+      const newIndex = Math.round(container.scrollLeft / cardWidth);
+
+      // Only update state if index actually changed to avoid loop
+      if (newIndex !== index && newIndex >= 0 && newIndex < count) {
+        setIndex(newIndex);
+      }
+    }
   };
 
   return (
     <section id="featured-papers" className="space-y-rhythm-4">
       <div className="flex items-center justify-between gap-4">
-        <SectionHeader label="Featured" count={count} />
+        <SectionHeader
+          label="Featured"
+          count={`${index + 1}/${count}`}
+        />
+
+        {/* Mobile Header Controls */}
+        {isMobile && count > 1 && (
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <ArrowButton
+                direction="left"
+                onClick={prev}
+                disabled={index === 0}
+              />
+              <ArrowButton
+                direction="right"
+                onClick={next}
+                disabled={index === count - 1}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Desktop Controls */}
         {showArrows && !isMobile ? (
           <div className="flex items-center gap-2">
@@ -150,7 +193,7 @@ export default function FeaturedPapers({ papers }) {
       <div
         className={clsx(
           "relative flex flex-col items-center justify-center outline-none",
-          isMobile ? "min-h-[600px]" : "overflow-visible"
+          isMobile ? "w-full" : "overflow-visible"
         )}
         style={!isMobile ? { height: CONTAINER_HEIGHT } : {}}
         tabIndex={0}
@@ -198,67 +241,50 @@ export default function FeaturedPapers({ papers }) {
           )}
         >
           {isMobile ? (
-            <AnimatePresence key="mobile-presence" initial={false} mode="popLayout" custom={direction}>
-              {/* MOBILE / TABLET VIEW (Single Card Swipe) */}
-              <motion.div
-                key={`mobile-${currentPaper.id || index}`}
-                className="w-full touch-pan-y"
-                custom={direction}
-                variants={mobileVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{
-                  x: { type: "spring", stiffness: 300, damping: 30 },
-                  opacity: { duration: 0.2 },
-                }}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={1}
-                onDragEnd={(e, { offset, velocity }) => {
-                  const swipe = swipePower(offset.x, velocity.x);
-
-                  if (swipe < -swipeConfidenceThreshold) {
-                    paginate(1);
-                  } else if (swipe > swipeConfidenceThreshold) {
-                    paginate(-1);
-                  }
-                }}
-              >
-                <ResearchPaperCard
-                  variant="detailed"
-                  className="w-full shadow-xl border border-flexoki-base-200/20 dark:border-flexoki-base-800/30 rounded-[10px] bg-white dark:bg-black"
-                  arxivId={currentPaper.id}
-                  url={toUrl(currentPaper)}
-                  title={currentPaper.title}
-                  authors={currentPaper.authors || []}
-                  description={currentPaper.spark || currentPaper.finding || ""}
-                  highlight={currentPaper.impact || currentPaper.why_it_matters || ""}
-                  sections={toSections(currentPaper)}
-                  section="Featured Papers"
-                  meta={
-                    <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 font-altSans text-ui text-flexoki-base-600 dark:text-flexoki-base-300">
-                      <span className="font-medium">{currentPaper.status}</span>
-                      <span className="opacity-40">·</span>
-                      <span className="font-medium">{currentPaper.published}</span>
-                    </div>
-                  }
-                >
-                  {(currentPaper.tags?.length ?? 0) > 0 ? (
-                    <div className="mt-4 flex flex-wrap gap-2 font-altSans">
-                      {currentPaper.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full bg-flexoki-base-100/60 backdrop-blur-sm px-3 py-1.5 text-ui font-semibold text-flexoki-base-800 border border-flexoki-base-200/40 shadow-sm dark:bg-flexoki-base-850/60 dark:text-flexoki-base-100 dark:border-flexoki-base-700/40"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-                </ResearchPaperCard>
-              </motion.div>
-            </AnimatePresence>
+            /* MOBILE VIEW (Native Scroll Snap) */
+            <div
+              ref={mobileScrollRef}
+              className="w-full overflow-x-auto snap-x snap-mandatory flex gap-4 scrollbar-hide py-4 px-1"
+              onScroll={handleMobileScroll}
+              style={{ scrollBehavior: 'smooth' }}
+            >
+              {papers.map((paper, idx) => (
+                <div key={paper.id || idx} className="w-full flex-shrink-0 snap-center">
+                  <ResearchPaperCard
+                    variant="detailed"
+                    className="w-full shadow-xl border border-flexoki-base-200/20 dark:border-flexoki-base-800/30 rounded-[10px] bg-white dark:bg-black"
+                    arxivId={paper.id}
+                    url={toUrl(paper)}
+                    title={paper.title}
+                    authors={paper.authors || []}
+                    description={paper.spark || paper.finding || ""}
+                    highlight={paper.impact || paper.why_it_matters || ""}
+                    sections={toSections(paper)}
+                    section="Featured Papers"
+                    meta={
+                      <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 font-altSans text-ui text-flexoki-base-600 dark:text-flexoki-base-300">
+                        <span className="font-medium">{paper.status}</span>
+                        <span className="opacity-40">·</span>
+                        <span className="font-medium">{paper.published}</span>
+                      </div>
+                    }
+                  >
+                    {(paper.tags?.length ?? 0) > 0 ? (
+                      <div className="mt-4 flex flex-wrap gap-2 font-altSans">
+                        {paper.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-flexoki-base-100/60 backdrop-blur-sm px-3 py-1.5 text-ui font-semibold text-flexoki-base-800 border border-flexoki-base-200/40 shadow-sm dark:bg-flexoki-base-850/60 dark:text-flexoki-base-100 dark:border-flexoki-base-700/40"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+                  </ResearchPaperCard>
+                </div>
+              ))}
+            </div>
           ) : (
             <AnimatePresence key="desktop-presence" initial={false} mode="sync">
               {/* DESKTOP VIEW (Stack) */}
@@ -350,39 +376,29 @@ export default function FeaturedPapers({ papers }) {
           )}
         </div>
 
-        {/* Controls - Show at bottom for both, but styled different */}
-        {showArrows ? (
-          isMobile ? (
-            <div className="mt-8 flex items-center justify-center gap-4">
-              <ArrowButton direction="left" onClick={prev} disabled={!showArrows} />
-              <div className="text-sm font-medium opacity-60 font-altSans">
+        {/* Controls - Show at bottom for Desktop Only */}
+        {!isMobile && showArrows ? (
+          <div className="absolute inset-x-0 -bottom-16 z-40 flex items-center justify-center gap-4">
+            <ArrowButton
+              direction="left"
+              onClick={prev}
+              disabled={!showArrows}
+            />
+            <div className="flex items-center gap-3 rounded-full bg-flexoki-base-900/95 text-flexoki-base-50 px-4 py-2.5 text-ui font-altSans shadow-xl backdrop-blur-md border border-flexoki-base-700/30 dark:bg-flexoki-base-50/95 dark:text-flexoki-base-900 dark:border-flexoki-base-200/30">
+              <span className="text-ui font-medium tracking-wide">
                 {index + 1} / {count}
-              </div>
-              <ArrowButton direction="right" onClick={next} disabled={!showArrows} />
+              </span>
+              <div className="w-px h-4 bg-flexoki-base-300 dark:bg-flexoki-base-600"></div>
+              <span className="text-ui font-medium text-flexoki-base-200 dark:text-flexoki-base-700">
+                Featured
+              </span>
             </div>
-          ) : (
-            <div className="absolute inset-x-0 -bottom-16 z-40 flex items-center justify-center gap-4">
-              <ArrowButton
-                direction="left"
-                onClick={prev}
-                disabled={!showArrows}
-              />
-              <div className="flex items-center gap-3 rounded-full bg-flexoki-base-900/95 text-flexoki-base-50 px-4 py-2.5 text-ui font-altSans shadow-xl backdrop-blur-md border border-flexoki-base-700/30 dark:bg-flexoki-base-50/95 dark:text-flexoki-base-900 dark:border-flexoki-base-200/30">
-                <span className="text-ui font-medium tracking-wide">
-                  {index + 1} / {count}
-                </span>
-                <div className="w-px h-4 bg-flexoki-base-300 dark:bg-flexoki-base-600"></div>
-                <span className="text-ui font-medium text-flexoki-base-200 dark:text-flexoki-base-700">
-                  Featured
-                </span>
-              </div>
-              <ArrowButton
-                direction="right"
-                onClick={next}
-                disabled={!showArrows}
-              />
-            </div>
-          )
+            <ArrowButton
+              direction="right"
+              onClick={next}
+              disabled={!showArrows}
+            />
+          </div>
         ) : null}
       </div>
     </section>

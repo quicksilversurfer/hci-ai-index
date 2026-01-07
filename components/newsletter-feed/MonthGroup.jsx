@@ -78,9 +78,13 @@ export default function MonthGroup({ month, issues, papersReviewed }) {
       // case 2:
       default:
         return (
-          <>
-            <div className="absolute -top-[200%] left-[00%] w-[100%] h-[200%] rounded-full opacity-80 dark:opacity-20 blur-[200px]" style={{ backgroundColor: baseColor }} />
-          </>
+          <div
+            className="absolute -top-[120px] -left-[10%] w-[120%] h-[300px] rounded-[100%] opacity-30 dark:opacity-10 blur-[60px]"
+            style={{
+              backgroundColor: baseColor,
+              transform: 'translate3d(0,0,0)' // Force GPU acceleration
+            }}
+          />
         );
     }
   };

@@ -182,7 +182,7 @@ export default function Header() {
         />
       </div>
 
-      <nav className="content-shell py-3 sm:py-4 flex items-center justify-between gap-6">
+      <nav className="content-shell py-3 sm:py-4 flex items-center justify-between gap-6 px-5">
         <div className="flex flex-col justify-center min-w-0 h-[34px]">
           {!showBreadcrumb ? (
             <div className="flex items-center gap-4 flex-wrap">

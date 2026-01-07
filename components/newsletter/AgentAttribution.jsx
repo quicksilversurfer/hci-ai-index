@@ -23,10 +23,7 @@ AgentIcon.propTypes = {
     className: PropTypes.string,
 };
 
-export default function AgentAttribution({ paperCount, modelName }) {
-    // Hardcoded to reflect the specific agentic pipeline configuration
-    const displayModel = "Anthropic Sonnet 4.5 & Haiku 4.5";
-
+export default function AgentAttribution({ paperCount }) {
     return (
         <div className="max-w-reading mx-auto px-4 lg:px-0">
             <div className="flex flex-col items-center gap-3 py-2">
@@ -35,10 +32,10 @@ export default function AgentAttribution({ paperCount, modelName }) {
                 </div>
                 <div className="text-center space-y-1">
                     <h3 className="type-label-base text-sm type-body-smooth">
-                        Synthesized by AI
+                        Synthesized using AI
                     </h3>
                     <p className="font-altSans text-body-sm type-body-smooth">
-                        Analyzed {paperCount} papers · Generated using {displayModel}
+                        Analyzed {paperCount} papers. AI models can occasionally hallucinate, please verify critical details.
                     </p>
                 </div>
             </div>
@@ -48,5 +45,4 @@ export default function AgentAttribution({ paperCount, modelName }) {
 
 AgentAttribution.propTypes = {
     paperCount: PropTypes.number.isRequired,
-    modelName: PropTypes.string,
 };

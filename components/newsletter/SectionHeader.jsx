@@ -10,7 +10,7 @@ export default function SectionHeader({ label, count, className = "" }) {
       )}
     >
       <span>{label}</span>
-      {typeof count === "number" ? (
+      {count !== undefined && count !== null ? (
         <span className="text-base-500 dark:text-base-400">({count})</span>
       ) : null}
     </div>
@@ -19,6 +19,6 @@ export default function SectionHeader({ label, count, className = "" }) {
 
 SectionHeader.propTypes = {
   label: PropTypes.string.isRequired,
-  count: PropTypes.number,
+  count: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   className: PropTypes.string,
 };

@@ -44,11 +44,11 @@ const literata = Literata({
 export const metadata = {
   metadataBase: new URL("https://hciindex.com/"),
   title: {
-    default: "HCI Index - A Practitioner's Guide to HCI Literature",
+    default: "HCI Index - Weekly Synthesis of HCI Literature",
     template: "%s | HCI Index",
   },
   description:
-    "Explore a curated guide to HCI literature, designed to enhance understanding and spark curiosity in the field of Human-Computer Interaction, made using AI.",
+    "Explore a curated weekly synthesis of HCI literature, designed to enhance understanding and spark curiosity in the field of Human-Computer Interaction.",
   keywords: [
     "HCI",
     "Human-Computer Interaction",
@@ -79,9 +79,9 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     url: "https://hciindex.com/",
-    title: "HCI Index - A Practitioner's Guide to HCI Literature",
+    title: "HCI Index - Weekly Synthesis of HCI Literature",
     description:
-      "Explore a curated guide to HCI literature, designed to enhance understanding and spark curiosity in the field of Human-Computer Interaction, made using AI.",
+      "Explore a curated weekly synthesis of HCI literature, designed to enhance understanding and spark curiosity in the field of Human-Computer Interaction.",
     siteName: "HCI Index",
     images: [
       {
@@ -95,7 +95,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "HCI Index",
-    description: "A tailored guide to HCI literature made using AI.",
+    description: "A tailored weekly synthesis of HCI literature.",
     images: ["/opengraph-image.png"],
   },
   alternates: {
@@ -125,7 +125,7 @@ export default function RootLayout({ children }) {
               "@type": "WebSite",
               name: "HCI Index",
               url: "https://hciindex.com/",
-              description: "A tailored guide to HCI literature made using AI.",
+              description: "A tailored weekly synthesis of HCI literature.",
               author: {
                 "@type": "Person",
                 name: "Prateek Solanki",

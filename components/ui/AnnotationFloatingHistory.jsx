@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAnnotation } from '@/contexts/AnnotationContext';
 import clsx from 'clsx';
+import { usePathname } from 'next/navigation';
 
 function ClipboardEmptyIcon(props) {
     return (
@@ -106,7 +107,10 @@ function AnnotationItem({ item, onRemove }) {
     );
 }
 
+
+
 export default function AnnotationFloatingHistory() {
+    const pathname = usePathname();
     const { annotations, removeAnnotation, clearHistory } = useAnnotation();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -131,6 +135,10 @@ export default function AnnotationFloatingHistory() {
         }).join('\n\n');
         navigator.clipboard.writeText(text);
     };
+
+    if (annotations.length === 0 && pathname === '/') {
+        return null;
+    }
 
     return (
         <>

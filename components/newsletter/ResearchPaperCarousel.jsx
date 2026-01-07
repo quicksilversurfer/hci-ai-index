@@ -15,7 +15,7 @@ export default function ResearchPaperCarousel({ papers, className, section }) {
         const el = scrollContainerRef.current;
         if (el) {
             const { scrollLeft, scrollWidth, clientWidth } = el;
-            setCanScrollLeft(scrollLeft > 0);
+            setCanScrollLeft(scrollLeft > 10);
             setCanScrollRight(Math.ceil(scrollLeft + clientWidth) < scrollWidth);
         }
     }, []);
@@ -59,13 +59,13 @@ export default function ResearchPaperCarousel({ papers, className, section }) {
         <div className={clsx("relative", className)}>
             {/* Navigation Arrows */}
             {canScrollLeft && (
-                <div className="absolute left-0 top-1/2 z-20 -translate-y-1/2 -translate-x-1/2 transition-opacity duration-200">
+                <div className="absolute left-2 top-1/2 z-20 -translate-y-1/2 transition-opacity duration-200">
                     <ArrowButton direction="left" onClick={() => scroll("left")} className="bg-white dark:bg-flexoki-base-900 shadow-xl" />
                 </div>
             )}
 
             {canScrollRight && (
-                <div className="absolute right-0 top-1/2 z-20 -translate-y-1/2 translate-x-1/2 transition-opacity duration-200">
+                <div className="absolute right-2 top-1/2 z-20 -translate-y-1/2 transition-opacity duration-200">
                     <ArrowButton direction="right" onClick={() => scroll("right")} className="bg-white dark:bg-flexoki-base-900 shadow-xl" />
                 </div>
             )}
@@ -73,10 +73,10 @@ export default function ResearchPaperCarousel({ papers, className, section }) {
             {/* Scrollable Container */}
             <div
                 ref={scrollContainerRef}
-                className="flex gap-4 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+                className="flex gap-4 overflow-x-auto pb-4 pt-1 px-1 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
                 style={{
-                    maskImage: `linear-gradient(to right, ${canScrollLeft ? 'transparent' : 'black'} 0%, black 120px, black calc(100% - 120px), ${canScrollRight ? 'transparent' : 'black'} 100%)`,
-                    WebkitMaskImage: `linear-gradient(to right, ${canScrollLeft ? 'transparent' : 'black'} 0%, black 120px, black calc(100% - 120px), ${canScrollRight ? 'transparent' : 'black'} 100%)`
+                    maskImage: `linear-gradient(to right, ${canScrollLeft ? 'transparent' : 'black'} 0%, black 48px, black calc(100% - 48px), ${canScrollRight ? 'transparent' : 'black'} 100%)`,
+                    WebkitMaskImage: `linear-gradient(to right, ${canScrollLeft ? 'transparent' : 'black'} 0%, black 48px, black calc(100% - 48px), ${canScrollRight ? 'transparent' : 'black'} 100%)`
                 }}
             >
                 {papers.map((paper, idx) => {
