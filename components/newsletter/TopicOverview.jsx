@@ -104,7 +104,7 @@ export default function TopicOverview({ summary, totalPapers, topics, curationSt
           <div className="space-y-4">
             <SectionHeader label="ABOUT THIS ISSUE" className="text-emerald-600 dark:text-emerald-400" />
             <h2 className="font-altDisplay text-3xl md:text-4xl font-bold text-hci-primary dark:text-flexoki-base-50">
-              How this newsletter was synthesized?
+              How was this newsletter synthesized?
             </h2>
           </div>
 
