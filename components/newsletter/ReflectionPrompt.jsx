@@ -68,7 +68,7 @@ export default function ReflectionPrompt({
       <div className="flex items-center justify-between gap-4 h-11">
         <SectionHeader label="REFLECTION" count={considerations.length} />
         {hasConsiderations && considerations.length > 1 && (
-          <div className="flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             <ArrowButton direction="left" onClick={prev} />
             <ArrowButton direction="right" onClick={next} />
           </div>
@@ -104,10 +104,16 @@ export default function ReflectionPrompt({
             </div>
 
             {/* Custom Indicator */}
-            <div className="mt-8 flex justify-start lg:justify-center w-full">
+            <div className="mt-8 flex items-center justify-between lg:justify-center w-full gap-4">
               <span className="type-label !font-medium opacity-80">
                 {currentIndex + 1} / {considerations.length}
               </span>
+              {considerations.length > 1 && (
+                <div className="flex items-center gap-2 lg:hidden">
+                  <ArrowButton direction="left" onClick={prev} />
+                  <ArrowButton direction="right" onClick={next} />
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -130,7 +130,7 @@ export default function TopicOverview({ summary, totalPapers, topics, curationSt
             <h4 className="font-altSans text-xs uppercase tracking-widest text-flexoki-base-500">
               Key Themes Discovered
             </h4>
-            <div className="flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-2">
               <ArrowButton
                 direction="left"
                 onClick={handlePrev}
@@ -195,9 +195,23 @@ export default function TopicOverview({ summary, totalPapers, topics, curationSt
               >
                 <motion.div className="space-y-6" variants={itemVariants}>
                   <div className="space-y-4">
-                    <h4 className="font-altSans text-xs uppercase tracking-widest text-flexoki-base-500">
-                      Field Report: {activeKey}
-                    </h4>
+                    <div className="flex items-center justify-between gap-4">
+                      <h4 className="font-altSans text-xs uppercase tracking-widest text-flexoki-base-500">
+                        Field Report: {activeKey}
+                      </h4>
+                      <div className="flex items-center gap-2 lg:hidden">
+                        <ArrowButton
+                          direction="left"
+                          onClick={handlePrev}
+                          disabled={totalTopics <= 1}
+                        />
+                        <ArrowButton
+                          direction="right"
+                          onClick={handleNext}
+                          disabled={totalTopics <= 1}
+                        />
+                      </div>
+                    </div>
                     <h3 className="font-altSans text-2xl text-hci-primary dark:text-flexoki-base-50 leading-tight">
                       {activeTopic.headline}
                     </h3>

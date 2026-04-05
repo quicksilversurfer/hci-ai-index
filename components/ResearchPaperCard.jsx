@@ -317,8 +317,9 @@ export default function ResearchPaperCard({
               className={clsx(
                 "font-altSans mt-2 font-semibold text-hci-primary dark:text-flexoki-base-50",
                 enlargeTitle
-                  ? "text-body-xl leading-tight"
-                  : "text-body-md leading-snug",
+                  ? "text-body-xl min-[480px]:text-body-lg sm:text-body-xl leading-tight"
+                  : "text-body-md min-[480px]:text-body-sm sm:text-body-md leading-snug",
+                !isTitleOnly && "line-clamp-3 sm:line-clamp-none",
                 isTitleOnly && "line-clamp-6"
               )}
             >
@@ -327,7 +328,7 @@ export default function ResearchPaperCard({
             {renderMeta}
             {description ? (
               <div className="mt-4 flex-1">
-                <p className="font-altSans text-body-intermediate leading-relaxed font-light text-hci-secondary dark:text-flexoki-base-300 line-clamp-6">
+                <p className="font-altSans text-body-intermediate min-[480px]:text-body-sm sm:text-body-intermediate leading-relaxed font-light text-hci-secondary dark:text-flexoki-base-300 line-clamp-4 sm:line-clamp-6">
                   {description}
                 </p>
               </div>

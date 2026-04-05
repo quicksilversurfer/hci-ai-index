@@ -20,7 +20,7 @@ export default function FurtherReading({ items }) {
 
   if (!items?.length) return null;
 
-  const INITIAL_COUNT = 3;
+  const INITIAL_COUNT = 4;
   const shouldTruncate = isMobile && !showAll;
   const visibleItems = shouldTruncate ? items.slice(0, INITIAL_COUNT) : items;
   const hasMore = isMobile && items.length > INITIAL_COUNT;
@@ -30,7 +30,7 @@ export default function FurtherReading({ items }) {
       <div className="flex items-center justify-between gap-4 h-11">
         <SectionHeader label="FURTHER READING" count={items.length} />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {visibleItems.map((item) => (
           <ResearchPaperCard
             key={item.id}
