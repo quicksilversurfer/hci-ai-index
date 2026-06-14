@@ -1,6 +1,12 @@
 import FeedContainer from "@/components/newsletter-feed/FeedContainer";
 import { getIssueSummaries } from "@/app/lib/feed-data";
 
+export const metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
+
 export default async function NewsletterFeed() {
   const issues = await getIssueSummaries();
 

@@ -17,12 +17,6 @@ export default async function sitemap() {
             changeFrequency: "monthly",
             priority: 0.9,
         },
-        {
-            url: `${baseUrl}/disclaimer`,
-            lastModified,
-            changeFrequency: "yearly",
-            priority: 0.5,
-        },
     ];
 
     try {

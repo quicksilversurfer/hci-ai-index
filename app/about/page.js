@@ -1,6 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata = {
+  title: "About",
+  description:
+    "Learn how HCI Index synthesizes recent human-computer interaction research into accessible weekly insights.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About HCI Index",
+    description:
+      "Learn how HCI Index synthesizes recent human-computer interaction research into accessible weekly insights.",
+    url: "https://hciindex.com/about",
+  },
+};
+
 export default async function About() {
   return (
     <main className="flex flex-col w-full grow pb-content-y">

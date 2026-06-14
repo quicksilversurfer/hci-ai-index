@@ -98,9 +98,6 @@ export const metadata = {
     description: "A tailored weekly synthesis of HCI literature.",
     images: ["/opengraph-image.png"],
   },
-  alternates: {
-    canonical: "/",
-  },
 };
 
 export default function RootLayout({ children }) {
