@@ -2,8 +2,13 @@
 
 import PropTypes from "prop-types";
 import clsx from "clsx";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import AnnotationFloatingHistory from "@/components/ui/AnnotationFloatingHistory";
+
+const AnnotationFloatingHistory = dynamic(
+  () => import("@/components/ui/AnnotationFloatingHistory"),
+  { ssr: false }
+);
 
 export default function LayoutShell({ children, footer }) {
   const pathname = usePathname();
@@ -18,6 +23,8 @@ export default function LayoutShell({ children, footer }) {
   ].includes(pathname);
 
   const shouldApplyShell = !isNewsletterIndex && !isManualLayout;
+  const shouldLoadAnnotationHistory =
+    pathname?.startsWith("/collections") || pathname?.startsWith("/newsletters/");
 
   return (
     <div className="w-full grow flex flex-col relative isolation-auto">
@@ -33,7 +40,7 @@ export default function LayoutShell({ children, footer }) {
         {children}
       </div>
       <div className="w-full content-shell">{footer}</div>
-      <AnnotationFloatingHistory />
+      {shouldLoadAnnotationHistory && <AnnotationFloatingHistory />}
     </div>
   );
 }

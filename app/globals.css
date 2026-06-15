@@ -158,7 +158,6 @@
       sans-serif;
     letter-spacing: 0.025em;
     font-weight: 400;
-    @apply transition-colors duration-200;
   }
 
   .link-style::before {

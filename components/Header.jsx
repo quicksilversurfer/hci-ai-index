@@ -1,8 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import clsx from "clsx";
 
 import ThemeSelector from "@/components/ThemeSelector";
@@ -132,9 +130,6 @@ function buildBreadcrumb(pathname) {
 }
 
 export default function Header() {
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const breadcrumb = buildBreadcrumb(pathname);
   const showBreadcrumb = !!breadcrumb;
@@ -145,14 +140,6 @@ export default function Header() {
       pathname === "/generate") &&
     breadcrumb;
 
-  useEffect(() => {
-    setMounted(true);
-    const onScroll = () => setIsScrolled(window.scrollY > 0);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
     <header
       className={clsx(
@@ -162,7 +149,7 @@ export default function Header() {
       <div
         className={clsx(
           "absolute inset-0 -z-10 h-[150%] pointer-events-none transition-opacity duration-700 ease-out",
-          isScrolled ? "opacity-100" : "opacity-0"
+          "opacity-100"
         )}
         aria-hidden="true"
       >
@@ -227,10 +214,7 @@ export default function Header() {
               }
               className={clsx(
                 "transition-transform hover:-translate-x-1 duration-200",
-                mounted && {
-                  "text-[#072ac8]": theme === "light",
-                  "text-[#d0a215]": theme === "dark" || theme === "system",
-                }
+                "text-[#072ac8] dark:text-[#d0a215]"
               )}
               aria-label="Back to home"
             >

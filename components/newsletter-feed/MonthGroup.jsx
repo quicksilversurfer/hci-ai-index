@@ -1,53 +1,7 @@
-"use client";
-
 import NewsletterRow from "@/components/newsletter-feed/NewsletterRow";
 
 import { MONTH_HEX_COLORS } from "@/utils/monthColors";
 
-
-// Helper to convert hex to HSL and boost saturation
-function getBoostedGradient(hexColor) {
-  // Remove # if present
-  const hex = hexColor.replace("#", "");
-
-  // Parse hex
-  const r = parseInt(hex.substring(0, 2), 16) / 255;
-  const g = parseInt(hex.substring(2, 4), 16) / 255;
-  const b = parseInt(hex.substring(4, 6), 16) / 255;
-
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
-
-  if (max === min) {
-    h = s = 0;
-  } else {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
-    }
-    h /= 6;
-  }
-
-  // Convert to degrees/percent
-  h = Math.round(h * 360);
-  l = Math.round(l * 100);
-
-  // Boost saturation (increase by 20%, clamp at 100%)
-  let sPercent = Math.round(s * 100);
-  sPercent = Math.min(100, sPercent + 20);
-
-  // Scrim gradient stops (mapping lightness 50->91 from example to alpha 1->0)
-  // Stops: 0%, 7%, 14%, 21%, 28%, 35%, 41%, 48%, 54%, 60%, 66%, 71%, 76%, 80%, 84%, 87%, 90%, 93%, 95%, 96%, 97%, 98%, 99%, 100%
-  // L values from example: 50, 53, 55, 57, 59, 61, 63, 65, 66, 68, 70, 72, 73, 75, 77, 79, 80, 82, 83, 85, 86, 87, 89, 90, 91
-  // We map these L values to Alpha: Alpha = 1 - ((L - 50) / (91 - 50))
-
-  const referenceL = [50, 53, 55, 57, 59, 61, 63, 65, 66, 68, 70, 72, 73, 75, 77, 79, 80, 82, 83, 85, 86, 87, 89, 90, 91];
-  const stopsPercent = [0, 7, 14, 21, 28, 35, 41, 48, 54, 60, 66, 71, 76, 80, 84, 87, 90, 93, 95, 96, 97, 98, 99, 100];
-}
 
 export default function MonthGroup({ month, issues, papersReviewed }) {
   // Generate a deterministic "random" configuration based on the month string
