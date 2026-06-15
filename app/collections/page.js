@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import AllCollections from "@/components/collection/AllCollections";
 import AllCollectionsSkeleton from "@/components/collection/AllCollectionsSkeleton";
 
+export const dynamic = "force-dynamic";
+
 export default function CollectionsPage() {
   return (
     <main className="flex flex-col w-full grow pb-content-y">

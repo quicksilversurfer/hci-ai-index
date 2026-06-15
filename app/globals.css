@@ -149,6 +149,28 @@
 }
 
 @layer components {
+  .site-header-backdrop {
+    opacity: 1;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .site-header-backdrop {
+      opacity: 0;
+      animation: reveal-header-backdrop linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 1px;
+    }
+  }
+
+  @keyframes reveal-header-backdrop {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
 
   /* Links */
   .link-style {

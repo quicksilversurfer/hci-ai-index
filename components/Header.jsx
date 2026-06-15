@@ -148,8 +148,7 @@ export default function Header() {
     >
       <div
         className={clsx(
-          "absolute inset-0 -z-10 h-[150%] pointer-events-none transition-opacity duration-700 ease-out",
-          "opacity-100"
+          "site-header-backdrop absolute inset-0 -z-10 h-[150%] pointer-events-none transition-opacity duration-700 ease-out"
         )}
         aria-hidden="true"
       >
