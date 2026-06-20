@@ -36,10 +36,6 @@ export default function StrategicTrends({ trends }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const current = items[index] || null;
-
-  if (!current) return null;
-
   const goTo = useCallback(
     (idx) => {
       setIndex((idx + items.length) % items.length);
@@ -121,6 +117,9 @@ export default function StrategicTrends({ trends }) {
       },
     },
   };
+
+  const current = items[index] || null;
+  if (!current) return null;
 
 
 
