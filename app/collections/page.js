@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import AllCollections from "@/components/collection/AllCollections";
 import AllCollectionsSkeleton from "@/components/collection/AllCollectionsSkeleton";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default function CollectionsPage() {
   return (

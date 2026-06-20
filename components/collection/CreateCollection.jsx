@@ -1,7 +1,6 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
-import { useState, useEffect, Suspense } from "react";
-import { useCompletion } from "ai/react";
+
+import { useState } from "react";
 
 import Collection from "@/components/collection/Collection";
 import PaperDetails from "@/components/papers/PaperDetails";
@@ -14,14 +13,10 @@ function XMarkIcon(props) {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      className="w-8 h-8"
+      className="h-8 w-8"
       {...props}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M6 18 18 6M6 6l12 12"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
     </svg>
   );
 }
@@ -34,7 +29,7 @@ function DocumentSearch(props) {
       viewBox="0 0 24 24"
       strokeWidth=".5"
       stroke="currentColor"
-      className="w-6 h-6"
+      className="h-6 w-6"
       {...props}
     >
       <path
@@ -48,206 +43,182 @@ function DocumentSearch(props) {
 
 function Spinner() {
   return (
-    <div className="flex justify-center items-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-2 border-base-200 dark:border-base-800 border-t-yellow-light dark:border-t-yellow"></div>
+    <div className="flex items-center justify-center" aria-hidden="true">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-base-200 border-t-yellow-light dark:border-base-800 dark:border-t-yellow" />
     </div>
   );
 }
 
+function SearchErrorIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="m15.5 15.5 4 4m-2-9a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
+
+const EXAMPLE_QUERIES = [
+  "virtual reality and cognitive load",
+  "hci in healthcare: case studies",
+  "impact of ai on ux",
+];
+
+async function postJson(url, body) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error ?? `Request failed (${response.status})`);
+  }
+
+  return data;
+}
+
 export default function CreateCollection() {
+  const [input, setInput] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [paperDetails, setPaperDetails] = useState([]);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleQuerySubmit = (e) => {
-    handleSubmit(e); // call the original handleSubmit
-    setPaperDetails([]);
-    setDescription("");
+  const runQuery = async (query) => {
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery || isGenerating) return;
+
+    setError("");
     setTitle("");
-  };
+    setDescription("");
+    setPaperDetails([]);
+    setIsGenerating(true);
 
-  const sendCompletionForProcessing = async (genTitle, genDescription) => {
     try {
-      setIsProcessing(true);
-      const response = await fetch("/api/processCompletion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: genTitle, description: genDescription }),
+      const result = await postJson("/api/processCompletion", {
+        query: trimmedQuery,
       });
-
-      if (!response.ok) {
-        // Log response for debugging
-        const errorBody = await response.text();
-        console.error("Response Status:", response.status);
-        console.error("Response Body:", errorBody);
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-      setPaperDetails(responseData);
-
-      // Catch errors
-    } catch (error) {
-      console.error("Error processing completion:", error);
+      setTitle(result.title);
+      setDescription(result.description);
+      setPaperDetails([
+        ...new Map(
+          (result.papers ?? []).map((paper) => [paper.uuid.toLowerCase(), paper]),
+        ).values(),
+      ]);
+    } catch (requestError) {
+      console.error("Collection request failed", requestError);
+      setError(requestError.message);
     } finally {
-      setIsProcessing(false);
+      setIsGenerating(false);
     }
   };
 
-  const {
-    completion,
-    input,
-    handleInputChange,
-    handleSubmit,
-    setInput,
-    isLoading,
-    complete,
-  } = useCompletion({
-    api: "/api/completion",
-    onFinish: (prompt, completion) => {
-      const titleStart = completion.indexOf("Title:");
-      const descriptionStart = completion.indexOf("Description:");
-
-      if (titleStart !== -1 && descriptionStart !== -1) {
-        const titleText = completion
-          .substring(titleStart + 7, descriptionStart)
-          .trim();
-        const descriptionText = completion
-          .substring(descriptionStart + 13)
-          .trim();
-
-        sendCompletionForProcessing(titleText, descriptionText);
-      }
-    },
-  });
-
-  useEffect(() => {
-    if (completion.length > 0) {
-      const titleStart = completion.indexOf("Title:");
-      const descriptionStart = completion.indexOf("Description:");
-
-      if (titleStart !== -1 && descriptionStart !== -1) {
-        const titleText = completion
-          .substring(titleStart + 7, descriptionStart)
-          .trim();
-        const descriptionText = completion
-          .substring(descriptionStart + 13)
-          .trim();
-        setTitle(titleText);
-        setDescription(descriptionText);
-      }
-    }
-  }, [completion]);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    runQuery(input);
+  };
 
   return (
     <>
-      <form onSubmit={handleQuerySubmit} className="mb-12 mt-12">
+      <form onSubmit={handleSubmit} className="mb-12 mt-12">
         <div className="relative flex items-center">
           <input
             type="text"
             value={input}
-            onChange={handleInputChange}
+            onChange={(event) => setInput(event.target.value)}
             placeholder="what do you want to learn about..."
-            className="font-display bg-base-100 border placeholder-base-500 border-base-150 dark:border-base-850 dark:bg-base-900 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:focus:ring-yellow rounded-md shadow-md dark:shadow-2xl text-2xl md:text-3xl w-full bg-transparent px-4 py-4 "
+            className="w-full rounded-md border border-base-150 bg-base-100 bg-transparent px-4 py-4 font-display text-2xl shadow-md placeholder-base-500 focus:outline-none focus:ring-1 focus:ring-yellow-light dark:border-base-850 dark:bg-base-900 dark:shadow-2xl dark:focus:ring-yellow md:text-3xl"
           />
           <div className="absolute inset-y-1 right-0 flex pr-4">
             {input && (
               <button
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setInput("");
-                }}
-                className="inline-flex items-center cursor-pointer group"
+                onClick={() => setInput("")}
+                className="group inline-flex cursor-pointer items-center"
                 aria-label="Clear input"
               >
-                <XMarkIcon className="text-base-500 group-hover:text-base-300 transition h-8 w-8" />
+                <XMarkIcon className="h-8 w-8 text-base-500 transition group-hover:text-base-300" />
               </button>
             )}
           </div>
         </div>
       </form>
 
-      {/* Loading spinner for both completion generation and paper fetching */}
-      {(isLoading || isProcessing) && (
-        <div className="flex justify-center items-center py-12">
+      {isGenerating && (
+        <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <Spinner />
-            <p className="mt-4 text-lg font-sans text-base-600 dark:text-base-400">
-              {isLoading ? "Generating collection..." : "Finding papers..."}
+            <p className="mt-4 font-sans text-lg text-base-600 dark:text-base-400">
+              Searching the HCI research archive...
             </p>
           </div>
         </div>
       )}
 
-      {completion.length === 0 && !isLoading && (
-        <div className="flex grow font-sans justify-center items-center text-center text-base-500 dark:text-base-700">
-          <div className="mx-auto max-w-96 mb-24">
-            <DocumentSearch className="w-16 h-16 mx-auto mb-8" />
-            <div>
-              <p className="text-lg mb-8 text-pretty">
-                Not sure where to begin? Try one of these example queries:
-              </p>
-              <ul className="mb-4 space-y-6 text-pretty font-display text-lg">
-                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 hover:border-base-500 hover:dark:border-base-700 transition-all w-fit mx-auto">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const promptValue = "virtual reality and cognitive load";
-                      complete(promptValue);
-                      setInput(promptValue);
-                    }}
-                  >
-                    virtual reality and cognitive load
-                  </button>
-                </li>
-                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 hover:border-base-500 hover:dark:border-base-700 transition-all w-fit mx-auto">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const promptValue = "hci in healthcare: case studies";
-                      complete(promptValue);
-                      setInput(promptValue);
-                    }}
-                  >
-                    hci in healthcare: case studies
-                  </button>
-                </li>
-                <li className="p-1 px-4 rounded-full text-base-600 dark:text-base-400 border border-base-200 dark:border-base-900 hover:border-base-500 hover:dark:border-base-700 transition-all w-fit mx-auto">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const promptValue = "impact of ai on ux";
-                      complete(promptValue);
-                      setInput(promptValue);
-                    }}
-                  >
-                    impact of ai on ux
-                  </button>
-                </li>
-              </ul>
-            </div>
+      {error && !isGenerating && (
+        <div
+          role="alert"
+          className="mb-12 flex items-start gap-3 rounded-md bg-base-100/60 px-4 py-3 font-sans text-base-600 shadow-sm dark:bg-base-900/60 dark:text-base-400"
+        >
+          <SearchErrorIcon className="mt-0.5 h-5 w-5 shrink-0 opacity-70" />
+          <div>
+            <p className="text-base-800 dark:text-base-200">Search couldn’t finish</p>
+            <p className="mt-0.5 text-sm">{error}</p>
           </div>
         </div>
       )}
-      {completion.length > 0 && !isLoading && !isProcessing && (
+
+      {!title && !isGenerating && (
+        <div className="flex grow items-center justify-center text-center font-sans text-base-500 dark:text-base-700">
+          <div className="mx-auto mb-24 max-w-96">
+            <DocumentSearch className="mx-auto mb-8 h-16 w-16" />
+            <p className="mb-8 text-pretty text-lg">
+              Not sure where to begin? Try one of these example queries:
+            </p>
+            <ul className="mb-4 space-y-6 text-pretty font-display text-lg">
+              {EXAMPLE_QUERIES.map((query) => (
+                <li
+                  key={query}
+                  className="mx-auto w-fit rounded-full border border-base-200 p-1 px-4 text-base-600 transition-all hover:border-base-500 dark:border-base-900 dark:text-base-400 dark:hover:border-base-700"
+                >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setInput(query);
+                      runQuery(query);
+                    }}
+                  >
+                    {query}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {title && !isGenerating && (
         <Collection variant="generated" title={title} description={description}>
-          {paperDetails.papers &&
-            paperDetails.papers.length > 0 &&
-            paperDetails.papers.map((paper) => (
-              <PaperDetails
-                key={paper.uuid}
-                imgId={paper.uuid}
-                title={paper.title}
-                imgType={paper.type}
-                imgName={paper.image_name}
-                authors={paper.author}
-                summary={paper.summary}
-                link={paper.link}
-                date={paper.date}
-              />
-            ))}
+          {paperDetails.map((paper) => (
+            <PaperDetails
+              key={paper.uuid}
+              imgId={paper.uuid}
+              title={paper.title}
+              imgType={paper.type}
+              imgName={paper.image_name}
+              authors={paper.author}
+              summary={paper.summary}
+              link={paper.link}
+              date={paper.date}
+            />
+          ))}
         </Collection>
       )}
     </>

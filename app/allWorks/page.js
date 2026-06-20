@@ -2,6 +2,8 @@ import { getAllPapersDetails } from "@/app/lib/data";
 
 import PaperDetails from "@/components/papers/PaperDetails";
 
+export const revalidate = 3600;
+
 export default async function PaperList() {
   const papers = await getAllPapersDetails();
   return (

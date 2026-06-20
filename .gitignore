@@ -15,6 +15,9 @@
 
 # production
 /build
+/dist
+/data/source-images/
+/.local/
 
 # misc
 .DS_Store

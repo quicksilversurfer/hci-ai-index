@@ -62,7 +62,7 @@ export default function Collection({
       key={uuid}
       className={clsx(
         "group/collection rounded-lg max-w-full overflow-hidden relative transition-colors",
-        { "h-full max-h-[28rem]": variant === "overview" }
+        { "h-full": variant === "overview" }
       )}
     >
       <div className="relative w-full sm:w-fit after:hidden sm:after:block after:bg-yellow-light dark:after:bg-yellow after:top-0 after:h-full after:rounded-t-md after:w-8 after:absolute after:-right-4 after:skew-x-[30deg]">
@@ -74,7 +74,7 @@ export default function Collection({
         <div
           className={clsx(
             "text-base-900 w-full",
-            variant === "overview" ? "pb-rhythm-4" : "pt-24 pb-24"
+            variant === "overview" ? "pb-0" : "pt-24 pb-24"
           )}
         >
           <div className="w-full max-w-screen-xl mx-auto">
@@ -103,7 +103,7 @@ export default function Collection({
 
             <div className="mt-rhythm-3 px-6 font-sans">
               {variant === "overview" && (
-                <div className="flex flex-col sm:flex-row gap-rhythm-2">
+                <div className="grid grid-cols-3 items-end gap-rhythm-2">
                   {children}
                 </div>
               )}

@@ -1,109 +1,113 @@
-import supabase from "@/app/lib/supabase";
 import { notFound } from "next/navigation";
 
-// For all collections, fetch it's details, and paper images
-export async function getAllCollectionOverviews() {
+const DEFAULT_DATA_BASE_URL =
+  "https://d4409x4u6zb58.cloudfront.net/collections-data";
+const DATA_BASE_URL = (
+  process.env.HCI_COLLECTIONS_DATA_BASE_URL ?? DEFAULT_DATA_BASE_URL
+).replace(/\/$/, "");
+
+class DataResponseError extends Error {
+  status: number;
+
+  constructor(path: string, status: number) {
+    super(`Collections data request failed (${status}): ${path}`);
+    this.status = status;
+  }
+}
+
+async function fetchData<T>(path: string): Promise<T> {
+  const response = await fetch(`${DATA_BASE_URL}/${path}`, {
+    next: {
+      revalidate: 3600,
+      tags: ["collections-data"],
+    },
+  });
+
+  if (!response.ok) {
+    throw new DataResponseError(path, response.status);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+type PaperDetail = {
+  uuid: string;
+  title: string;
+  type: string;
+  image_name: string;
+  author: string[];
+  summary: string;
+  link: string;
+  date: string;
+};
+
+type CollectionOverview = {
+  uuid: string;
+  title: string;
+  description: string;
+  category: string;
+  category_type: string | null;
+  papers: Pick<PaperDetail, "uuid" | "title" | "type" | "image_name">[];
+};
+
+type CollectionDetail = Omit<CollectionOverview, "papers"> & {
+  papers: PaperDetail[];
+};
+
+type PaperListItem = Pick<PaperDetail, "uuid" | "title" | "type" | "author" | "link" | "date">;
+
+export async function getAllCollectionOverviews(): Promise<CollectionOverview[]> {
   try {
-    // Fetch all collections
-    const { data: collections, error: collectionsError } = await supabase
-      .from("collection")
-      .select("uuid, title, description, category, category_type, papers");
-
-    if (collectionsError) throw collectionsError;
-    if (!collections || collections.length === 0)
-      throw new Error("No collections found");
-
-    // For each collection, fetch its papers
-    const collectionsWithPapers = await Promise.all(
-      collections.map(async (collection) => {
-        if (collection.papers && collection.papers.length) {
-          const { data: papers, error: papersError } = await supabase
-            .from("papers")
-            .select("uuid, title, type, image_name")
-            .in("uuid", collection.papers);
-
-          if (papersError) throw papersError;
-          return { ...collection, papers };
-        }
-
-        return { ...collection, papers: [] };
-      })
+    const data = await fetchData<{ collections: CollectionOverview[] }>(
+      "collections/index.json",
     );
-
-    return collectionsWithPapers;
+    return data.collections;
   } catch (error) {
-    console.error(error.message);
-    notFound();
+    console.error("Unable to load collection index", error);
+    return [];
   }
 }
 
-// For a single collection, fetch its details and all paper details
-export async function getCollectionDetailsById(id: string) {
+export async function getCollectionDetailsById(id: string): Promise<CollectionDetail> {
   try {
-    // Fetch the collection by id
-    const { data: collection, error: collectionError } = await supabase
-      .from("collection")
-      .select("uuid, title, description, category, category_type, papers")
-      .eq("uuid", id)
-      .single();
-
-    if (collectionError) throw collectionError;
-    if (!collection) throw new Error("No collection found");
-
-    // If the collection has papers, fetch them
-    let papers = [];
-    if (collection.papers && collection.papers.length) {
-      const { data: papersData, error: papersError } = await supabase
-        .from("papers")
-        .select("uuid, title, type, image_name, author, summary, link, date")
-        .in("uuid", collection.papers);
-
-      if (papersError) throw papersError;
-      papers = papersData;
+    return await fetchData<CollectionDetail>(
+      `collections/by-id/${encodeURIComponent(id)}.json`,
+    );
+  } catch (error) {
+    if (
+      error instanceof DataResponseError &&
+      (error.status === 403 || error.status === 404)
+    ) {
+      notFound();
     }
-
-    // Return the collection with its papers
-    return { ...collection, papers };
-  } catch (error) {
-    console.error(error.message);
-    notFound();
+    throw error;
   }
 }
 
-export async function getPapersDetailsByIds(paperIds: Array<string>) {
-  try {
-    // Check if paperIds array is provided and has elements
-    if (!paperIds || !paperIds.length) {
-      throw new Error("No paper IDs provided");
+export async function getPapersDetailsByIds(paperIds: string[]): Promise<PaperDetail[]> {
+  if (!paperIds?.length) return [];
+
+  const results = await Promise.allSettled(
+    paperIds.map((id) =>
+      fetchData<PaperDetail>(`papers/by-id/${encodeURIComponent(id.toLowerCase())}.json`),
+    ),
+  );
+
+  results.forEach((result, index) => {
+    if (result.status === "rejected") {
+      console.error(`Unable to load paper ${paperIds[index]}`, result.reason);
     }
+  });
 
-    // Fetch papers by IDs
-    const { data: papersData, error: papersError } = await supabase
-      .from("papers")
-      .select("uuid, title, type, image_name, author, summary, link, date")
-      .in("uuid", paperIds);
-
-    if (papersError) throw papersError;
-
-    return papersData;
-  } catch (error) {
-    console.error(error.message);
-    return []; // or handle the error as per your application's needs
-  }
+  return results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
 }
 
-export async function getAllPapersDetails() {
+export async function getAllPapersDetails(): Promise<PaperListItem[]> {
   try {
-    // Fetch all papers
-    const { data: papersData, error: papersError } = await supabase
-      .from("papers")
-      .select("uuid, title, type, author, link, date");
-
-    if (papersError) throw papersError;
-
-    return papersData;
+    const data = await fetchData<{ papers: PaperListItem[] }>("papers/index.json");
+    return data.papers;
   } catch (error) {
-    console.error(error.message);
-    return []; // or handle the error as per your application's needs
+    console.error("Unable to load papers index", error);
+    return [];
   }
 }
