@@ -108,7 +108,7 @@ module.exports = {
       },
       animation: {
         "come-in-out": "comeInOut 1200ms forwards",
-        "sparkle-spin": "spin 1000ms linear",
+        "sparkle-spin": "sparkleSpin 1000ms linear",
       },
       keyframes: {
         comeInOut: {
@@ -116,7 +116,7 @@ module.exports = {
           "50%": { transform: "scale(1)" },
           "100%": { transform: "scale(0)" },
         },
-        spin: {
+        sparkleSpin: {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(180deg)" },
         },

@@ -1,0 +1,136 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Static content hosting for HCI Index collection and paper JSON data.
+
+Parameters:
+  ContentBucketName:
+    Type: String
+    Description: Globally unique S3 bucket name for static JSON content.
+Resources:
+  GenerateRateLimitTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+      SSESpecification:
+        SSEEnabled: true
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+
+  ContentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref ContentBucketName
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: ControlVersioningStorageCost
+            Status: Enabled
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 30
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods:
+              - GET
+              - HEAD
+            AllowedOrigins:
+              - "https://hciindex.com"
+              - "https://www.hciindex.com"
+              - "http://localhost:3000"
+            AllowedHeaders:
+              - "*"
+            MaxAge: 3000
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${AWS::StackName}-s3-oac"
+        Description: Access control for private S3 static content bucket.
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  ContentDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: HCI Index static collections data
+        HttpVersion: http2and3
+        PriceClass: PriceClass_100
+        DefaultRootObject: manifest.json
+        Origins:
+          - Id: ContentBucketOrigin
+            DomainName: !GetAtt ContentBucket.RegionalDomainName
+            OriginAccessControlId: !Ref OriginAccessControl
+            S3OriginConfig:
+              OriginAccessIdentity: ""
+        DefaultCacheBehavior:
+          TargetOriginId: ContentBucketOrigin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          OriginRequestPolicyId: 88a5eaf4-2fd4-4709-b370-b4c650ea3fcf
+
+  ContentBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ContentBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowCloudFrontRead
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action:
+              - s3:GetObject
+            Resource: !Sub "${ContentBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${ContentDistribution}"
+
+Outputs:
+  GenerateRateLimitTableName:
+    Description: DynamoDB table for generate endpoint rate limits and cache.
+    Value: !Ref GenerateRateLimitTable
+  GenerateRateLimitTableArn:
+    Description: DynamoDB table ARN for the application runtime IAM policy.
+    Value: !GetAtt GenerateRateLimitTable.Arn
+  BucketName:
+    Description: S3 bucket for static collection content.
+    Value: !Ref ContentBucket
+  CloudFrontDistributionId:
+    Description: CloudFront distribution id.
+    Value: !Ref ContentDistribution
+  CloudFrontDomainName:
+    Description: CloudFront domain name for HCI_COLLECTIONS_DATA_BASE_URL.
+    Value: !GetAtt ContentDistribution.DomainName

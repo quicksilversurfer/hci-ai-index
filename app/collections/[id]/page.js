@@ -1,10 +1,20 @@
 import { Suspense } from "react";
 
-import { getCollectionDetailsById } from "@/app/lib/data";
+import {
+  getAllCollectionOverviews,
+  getCollectionDetailsById,
+} from "@/app/lib/data";
 
 import PaperDetails from "@/components/papers/PaperDetails";
 import Collection from "@/components/collection/Collection";
 import AllCollectionsSkeleton from "@/components/collection/AllCollectionsSkeleton";
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const collections = await getAllCollectionOverviews();
+  return collections.map(({ uuid }) => ({ id: uuid }));
+}
 
 export default async function CollectionDetail({ params }) {
   const { id } = await params;
