@@ -24,7 +24,12 @@ const SEARCH_INDEX_URL =
   "https://d4409x4u6zb58.cloudfront.net/search/papers-v1.json";
 const PRIVATE_RESPONSE_HEADERS = { "Cache-Control": "private, no-store" };
 const bedrock = new BedrockRuntimeClient(awsClientConfig(REGION));
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+let openai;
+
+function getOpenAIClient() {
+  openai ??= new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  return openai;
+}
 
 async function embed(text) {
   const response = await bedrock.send(
@@ -76,7 +81,7 @@ async function synthesizeAnswer(query, papers) {
     )
     .join("\n\n");
 
-  const response = await openai.responses.create({
+  const response = await getOpenAIClient().responses.create({
     model: process.env.OPENAI_GENERATION_MODEL ?? "gpt-5-mini",
     input: [
       {

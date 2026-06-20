@@ -33,10 +33,6 @@ export default function CounterIntuitiveFindings({ findings }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const current = items[index] || null;
-
-  if (!current) return null;
-
   const goTo = useCallback(
     (idx) => {
       setIndex((idx + items.length) % items.length);
@@ -114,6 +110,9 @@ export default function CounterIntuitiveFindings({ findings }) {
       },
     },
   };
+
+  const current = items[index] || null;
+  if (!current) return null;
 
   return (
     <section id="counter-intuitive-findings" className="space-y-rhythm-4">
