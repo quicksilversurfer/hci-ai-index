@@ -6,6 +6,7 @@ import { Providers } from "@/app/providers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LayoutShell from "@/components/LayoutShell";
+import { buildSiteJsonLd, jsonLdScriptProps } from "@/app/lib/seo";
 
 import { JetBrains_Mono, Public_Sans, Literata } from "next/font/google";
 
@@ -64,6 +65,12 @@ export const metadata = {
   authors: [{ name: "Prateek Solanki", url: "https://prateeksolanki.com" }],
   creator: "Prateek Solanki",
   publisher: "HCI Index",
+  alternates: {
+    types: {
+      "application/rss+xml": "/rss.xml",
+      "application/atom+xml": "/atom.xml",
+    },
+  },
   robots: {
     index: true,
     follow: true,
@@ -114,23 +121,7 @@ export default function RootLayout({ children }) {
           literata.variable
         )}
       >
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "HCI Index",
-              url: "https://hciindex.com/",
-              description: "A tailored weekly synthesis of HCI literature.",
-              author: {
-                "@type": "Person",
-                name: "Prateek Solanki",
-                url: "https://prateeksolanki.com",
-              },
-            }),
-          }}
-        />
+        <script {...jsonLdScriptProps(buildSiteJsonLd())} />
         <Providers>
           <Header />
           <LayoutShell footer={<Footer />}>{children}</LayoutShell>

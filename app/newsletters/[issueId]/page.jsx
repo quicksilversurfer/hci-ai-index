@@ -16,6 +16,15 @@ import FurtherReading from "@/components/newsletter/FurtherReading";
 import ReflectionPrompt from "@/components/newsletter/ReflectionPrompt";
 import NewsletterNavigation from "@/components/newsletter/NewsletterNavigation";
 import NewsletterIssueAnalytics from "@/components/analytics/NewsletterIssueAnalytics";
+import {
+  buildIssueJsonLd,
+  getIssueDate,
+  getIssueDescription,
+  getIssueTitle,
+  issueOgImageUrl,
+  issueUrl,
+  jsonLdScriptProps,
+} from "@/app/lib/seo";
 
 export async function generateMetadata({ params }) {
   const { issueId } = await params;
@@ -27,11 +36,11 @@ export async function generateMetadata({ params }) {
     };
   }
 
-  const title = newsletter.headline?.title || `Issue ${issueId}`;
-  const description =
-    newsletter.headline?.subtitle ||
-    newsletter.synthesis?.content?.slice(0, 160) ||
-    "HCI Index Newsletter";
+  const title = getIssueTitle(newsletter, issueId);
+  const description = getIssueDescription(newsletter);
+  const publishedTime = getIssueDate(newsletter);
+  const url = issueUrl(issueId);
+  const image = issueOgImageUrl(issueId);
 
   return {
     title,
@@ -43,10 +52,11 @@ export async function generateMetadata({ params }) {
       title,
       description,
       type: "article",
-      url: `https://hciindex.com/newsletters/${issueId}`,
+      url,
+      publishedTime,
       images: [
         {
-          url: "/opengraph-image.png",
+          url: image,
           width: 1200,
           height: 630,
           alt: title,
@@ -57,7 +67,7 @@ export async function generateMetadata({ params }) {
       card: "summary_large_image",
       title,
       description,
-      images: ["/opengraph-image.png"],
+      images: [image],
     },
   };
 }
@@ -83,6 +93,7 @@ export default async function NewsletterPage({ params }) {
 
   return (
     <main className="space-y-12">
+      <script {...jsonLdScriptProps(buildIssueJsonLd(newsletter))} />
       <NewsletterIssueAnalytics
         issueId={newsletter.issue_id}
         title={newsletter.headline?.title}

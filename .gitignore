@@ -19,6 +19,11 @@
 /data/source-images/
 /.local/
 
+# local agent steering
+AGENTS.md
+.agents/
+.codex/
+
 # misc
 .DS_Store
 *.pem
