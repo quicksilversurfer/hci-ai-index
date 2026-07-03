@@ -2,6 +2,7 @@
 import React from "react";
 import { ThemeProvider } from "next-themes";
 import { AnnotationProvider } from "@/contexts/AnnotationContext";
+import PostHogPageView from "@/components/analytics/PostHogPageView";
 
 export function Providers({ children }) {
   return (
@@ -11,6 +12,7 @@ export function Providers({ children }) {
       suppressHydrationWarning="true"
     >
       <AnnotationProvider>
+        <PostHogPageView />
         {children}
       </AnnotationProvider>
     </ThemeProvider>

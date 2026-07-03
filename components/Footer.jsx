@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { captureAnalyticsEvent } from "@/app/lib/analytics";
 
 export default function Footer() {
   return (
@@ -12,7 +15,17 @@ export default function Footer() {
           </div>
           <div className="flex flex-row items-center gap-1">
             <span>by</span>
-            <a href="https://www.prateeksolanki.com/" className="link-style">
+            <a
+              href="https://www.prateeksolanki.com/"
+              className="link-style"
+              onClick={() => {
+                captureAnalyticsEvent("outbound_link_clicked", {
+                  link_label: "prateek solanki",
+                  link_destination: "https://www.prateeksolanki.com/",
+                  link_context: "footer",
+                });
+              }}
+            >
               prateek solanki
             </a>
           </div>

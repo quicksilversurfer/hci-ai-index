@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ResearchPaperCard from "@/components/ResearchPaperCard";
 import SectionHeader from "./SectionHeader";
 import ArrowButton from "./ArrowButton";
+import { captureAnalyticsEvent } from "@/app/lib/analytics";
 
 export default function FeaturedPapers({ papers }) {
   const CARD_RATIO = 11 / 8; // Taller aspect ratio
@@ -60,10 +61,19 @@ export default function FeaturedPapers({ papers }) {
         let nextIndex = prevIndex + newDirection;
         if (nextIndex < 0) nextIndex = count - 1;
         if (nextIndex >= count) nextIndex = 0;
+        const nextPaper = papers[nextIndex];
+        captureAnalyticsEvent("featured_papers_carousel_navigated", {
+          direction: newDirection > 0 ? "next" : "previous",
+          from_index: prevIndex,
+          to_index: nextIndex,
+          paper_count: count,
+          target_arxiv_id: nextPaper?.id,
+          target_paper_title: nextPaper?.title,
+        });
         return nextIndex;
       });
     },
-    [count]
+    [count, papers]
   );
 
   const next = useCallback(() => paginate(1), [paginate]);
@@ -143,6 +153,14 @@ export default function FeaturedPapers({ papers }) {
       // Only update state if index actually changed to avoid loop
       if (newIndex !== index && newIndex >= 0 && newIndex < count) {
         setIndex(newIndex);
+        const nextPaper = papers[newIndex];
+        captureAnalyticsEvent("featured_papers_carousel_scrolled", {
+          from_index: index,
+          to_index: newIndex,
+          paper_count: count,
+          target_arxiv_id: nextPaper?.id,
+          target_paper_title: nextPaper?.title,
+        });
       }
     }
   };

@@ -15,6 +15,7 @@ import Toolbox from "@/components/newsletter/Toolbox";
 import FurtherReading from "@/components/newsletter/FurtherReading";
 import ReflectionPrompt from "@/components/newsletter/ReflectionPrompt";
 import NewsletterNavigation from "@/components/newsletter/NewsletterNavigation";
+import NewsletterIssueAnalytics from "@/components/analytics/NewsletterIssueAnalytics";
 
 export async function generateMetadata({ params }) {
   const { issueId } = await params;
@@ -82,6 +83,12 @@ export default async function NewsletterPage({ params }) {
 
   return (
     <main className="space-y-12">
+      <NewsletterIssueAnalytics
+        issueId={newsletter.issue_id}
+        title={newsletter.headline?.title}
+        totalPapers={newsletter.topic_overview?.total_papers_reviewed || 0}
+        modelName={newsletter.curation_meta?.models?.narrative}
+      />
       <div className="newsletter-card grain-subtle space-y-rhythm-8 py-12 md:py-16">
         <div className="space-y-12 px-4 sm:px-8 md:px-12">
           <IssueHeader

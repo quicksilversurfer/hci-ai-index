@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import clsx from "clsx";
 import { ChevronLeftIcon, ChevronRightIcon } from "./ArrowButton";
+import { captureAnalyticsEvent } from "@/app/lib/analytics";
 
 const navButtonStyles = clsx(
     "inline-flex items-center rounded-[10px] border border-[rgba(34,34,34,0.18)]",
@@ -36,6 +39,13 @@ function NavButton({ issue, align = "left" }) {
         <Link
             href={`/newsletters/${issue.issue_id}`}
             className="group block outline-none no-underline"
+            onClick={() => {
+                captureAnalyticsEvent("newsletter_navigation_clicked", {
+                    target_issue_id: issue.issue_id,
+                    target_issue_title: issue.title,
+                    direction: align === "left" ? "previous" : "next",
+                });
+            }}
         >
             <article className={navButtonStyles}>
                 {align === "left" && (

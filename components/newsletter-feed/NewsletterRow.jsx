@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import clsx from "clsx";
+
+import { captureAnalyticsEvent } from "@/app/lib/analytics";
 
 
 export default function NewsletterRow({
@@ -12,6 +16,16 @@ export default function NewsletterRow({
   return (
     <Link
       href={`/newsletters/${issue.id}`}
+      onClick={() => {
+        captureAnalyticsEvent("newsletter_issue_clicked", {
+          issue_id: issue.id,
+          issue_title: issue.title,
+          issue_week_label: issue.week_label,
+          issue_year: issue.year,
+          issue_month: issue.month,
+          total_papers_reviewed: issue.total_papers_reviewed,
+        });
+      }}
       className={clsx(
         "group block transition-all duration-200",
         "border-t border-base-black/5 dark:border-base-paper/5",

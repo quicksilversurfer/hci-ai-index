@@ -4,6 +4,7 @@ import clsx from "clsx";
 import PropTypes from "prop-types";
 import { useLongHover } from "@/hooks/useLongHover";
 import { useAnnotation } from "@/contexts/AnnotationContext";
+import { captureAnalyticsEvent } from "@/app/lib/analytics";
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -24,13 +25,14 @@ function CheckIcon(props) {
   );
 }
 
-function AddButton({ onAdd, className }) {
+function AddButton({ onAdd, className, analyticsProperties }) {
   const [added, setAdded] = useState(false);
 
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
     onAdd();
+    captureAnalyticsEvent("paper_snippet_added", analyticsProperties);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -178,6 +180,17 @@ export default function ResearchPaperCard({
       url: url,
     });
   };
+  const paperAnalyticsProperties = {
+    arxiv_id: arxivId,
+    paper_title: title,
+    paper_url: url,
+    card_variant: resolvedVariant,
+    section,
+  };
+
+  const handlePaperClick = () => {
+    captureAnalyticsEvent("paper_link_clicked", paperAnalyticsProperties);
+  };
 
   const renderHeader = (withIcon, usePill = true) => (
     <div className={headerClass}>
@@ -189,7 +202,10 @@ export default function ResearchPaperCard({
         </span>
       )}
       <div className="flex items-center gap-2">
-        <AddButton onAdd={handleManualAdd} />
+        <AddButton
+          onAdd={handleManualAdd}
+          analyticsProperties={paperAnalyticsProperties}
+        />
         {withIcon && showExternalLinkIcon ? <ExternalLinkIcon /> : null}
       </div>
     </div>
@@ -224,6 +240,7 @@ export default function ResearchPaperCard({
           aria-label={`Open arXiv paper ${arxivId} in new tab`}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
+          onClick={handlePaperClick}
         >
           <article
             className={clsx(
@@ -235,7 +252,11 @@ export default function ResearchPaperCard({
               {arxivId}
             </span>
             <div className="flex items-center gap-1">
-              <AddButton onAdd={handleManualAdd} className="!p-0.5 -my-1" />
+              <AddButton
+                onAdd={handleManualAdd}
+                analyticsProperties={paperAnalyticsProperties}
+                className="!p-0.5 -my-1"
+              />
               {showExternalLinkIcon ? <ExternalLinkIcon /> : null}
             </div>
           </article>
@@ -260,6 +281,7 @@ export default function ResearchPaperCard({
           aria-label={`Open paper ${title} in new tab`}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
+          onClick={handlePaperClick}
         >
           <article
             className={clsx(
@@ -303,6 +325,7 @@ export default function ResearchPaperCard({
           aria-label={`Open paper ${title} in new tab`}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
+          onClick={handlePaperClick}
         >
           <article
             className={clsx(
@@ -349,6 +372,7 @@ export default function ResearchPaperCard({
         rel="noreferrer"
         className={clsx(baseLink, "w-full h-full")}
         aria-label={`Open paper ${title} in new tab`}
+        onClick={handlePaperClick}
       >
         <article
           className={clsx(
@@ -421,4 +445,10 @@ ResearchPaperCard.propTypes = {
   enlargeTitle: PropTypes.bool,
   fillHeight: PropTypes.bool,
   children: PropTypes.node,
+};
+
+AddButton.propTypes = {
+  onAdd: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  analyticsProperties: PropTypes.object,
 };
