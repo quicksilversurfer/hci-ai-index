@@ -4,6 +4,7 @@ import Link from "next/link";
 import clsx from "clsx";
 
 import ThemeSelector from "@/components/ThemeSelector";
+import IssueShareActions from "@/components/newsletter/IssueShareActions";
 
 function BackArrowIcon(props) {
   return (
@@ -83,6 +84,14 @@ function buildBreadcrumb(pathname) {
     ];
   }
 
+  // Newsletter archive: /newsletters
+  if (parts[0] === "newsletters" && parts.length === 1) {
+    return [
+      { label: "hci index", href: "/" },
+      { label: "newsletters" },
+    ];
+  }
+
   // Collections index: /collections
   if (parts[0] === "collections" && parts.length === 1) {
     return [
@@ -129,6 +138,12 @@ function buildBreadcrumb(pathname) {
   return null;
 }
 
+function getNewsletterIssueId(pathname) {
+  const parts = pathname?.split("/").filter(Boolean) || [];
+  if (parts[0] !== "newsletters" || !parts[1]) return null;
+  return decodeURIComponent(parts[1]);
+}
+
 export default function Header() {
   const pathname = usePathname();
   const breadcrumb = buildBreadcrumb(pathname);
@@ -139,6 +154,10 @@ export default function Header() {
       pathname === "/about" ||
       pathname === "/generate") &&
     breadcrumb;
+  const newsletterIssueId = getNewsletterIssueId(pathname);
+  const newsletterIssueUrl = newsletterIssueId
+    ? `https://hciindex.com/newsletters/${newsletterIssueId}`
+    : null;
 
   return (
     <header
@@ -250,7 +269,15 @@ export default function Header() {
           )}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6">
+          {newsletterIssueId && newsletterIssueUrl && (
+            <IssueShareActions
+              issueId={newsletterIssueId}
+              title={`HCI Index ${newsletterIssueId}`}
+              url={newsletterIssueUrl}
+              variant="icon"
+            />
+          )}
           <ThemeSelector />
         </div>
       </nav>

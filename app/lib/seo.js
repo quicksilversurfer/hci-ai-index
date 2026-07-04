@@ -34,6 +34,10 @@ export function getIssueDescription(newsletter) {
   return description.replace(/\s+/g, " ").trim().slice(0, 220);
 }
 
+export function getIssueSummaryDescription(issue) {
+  return (issue?.summary || SITE_DESCRIPTION).replace(/\s+/g, " ").trim();
+}
+
 export function getIssueDate(newsletter) {
   const value =
     newsletter?.run_date_utc ||
@@ -116,6 +120,30 @@ export function buildIssueJsonLd(newsletter) {
         mentions: papers.slice(0, 12).map(getPaperSchema),
       },
       {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumbs`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: SITE_NAME,
+            item: absoluteUrl("/"),
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Newsletters",
+            item: absoluteUrl("/newsletters"),
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: issueId,
+            item: url,
+          },
+        ],
+      },
+      {
         "@type": "Periodical",
         "@id": `${SITE_URL}/#newsletter`,
         name: SITE_NAME,
@@ -195,4 +223,13 @@ export function escapeXml(value = "") {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+export function getFeedIssueUrl(issue) {
+  return absoluteUrl(`/newsletters/${issue.id}`);
+}
+
+export function getFeedIssueDate(issue) {
+  const date = new Date(issue.date);
+  return Number.isNaN(date.getTime()) ? new Date() : date;
 }

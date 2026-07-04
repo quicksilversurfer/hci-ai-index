@@ -90,7 +90,6 @@ export default async function NewsletterPage({ params }) {
     currentIndex < allNewsletters.length - 1
       ? allNewsletters[currentIndex + 1]
       : null; // Older
-
   return (
     <main className="space-y-12">
       <script {...jsonLdScriptProps(buildIssueJsonLd(newsletter))} />

@@ -2,6 +2,9 @@ import { getIssueSummaries } from "@/app/lib/feed-data";
 import {
   absoluteUrl,
   escapeXml,
+  getFeedIssueDate,
+  getFeedIssueUrl,
+  getIssueSummaryDescription,
   SITE_AUTHOR,
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -13,8 +16,8 @@ export async function GET() {
 
   const entries = issues
     .map((issue) => {
-      const url = absoluteUrl(`/newsletters/${issue.id}`);
-      const date = new Date(issue.date);
+      const url = getFeedIssueUrl(issue);
+      const date = getFeedIssueDate(issue);
 
       return `
         <entry>
@@ -23,7 +26,7 @@ export async function GET() {
           <id>${escapeXml(url)}</id>
           <updated>${date.toISOString()}</updated>
           <published>${date.toISOString()}</published>
-          <summary>${escapeXml(issue.summary)}</summary>
+          <summary>${escapeXml(getIssueSummaryDescription(issue))}</summary>
         </entry>`;
     })
     .join("");

@@ -30,6 +30,7 @@ function DarkIcon(props) {
       strokeWidth="1.5"
       stroke="#d0a215"
       className="w-5 h-5"
+      {...props}
     >
       <path
         strokeLinecap="round"

@@ -69,6 +69,7 @@ export const metadata = {
     types: {
       "application/rss+xml": "/rss.xml",
       "application/atom+xml": "/atom.xml",
+      "application/feed+json": "/feed.json",
     },
   },
   robots: {
