@@ -68,7 +68,13 @@ function CheckIcon(props) {
   );
 }
 
-export default function IssueShareActions({ issueId, title, url, variant = "inline" }) {
+export default function IssueShareActions({
+  issueId,
+  title,
+  url,
+  variant = "inline",
+  shareContext = "issue_body",
+}) {
   const [copied, setCopied] = useState(false);
 
   const trackShare = (method) => {
@@ -77,6 +83,7 @@ export default function IssueShareActions({ issueId, title, url, variant = "inli
       issue_title: title,
       share_method: method,
       share_url: url,
+      share_context: shareContext,
     });
   };
 
@@ -159,5 +166,6 @@ IssueShareActions.propTypes = {
   issueId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
+  shareContext: PropTypes.string,
   variant: PropTypes.oneOf(["inline", "icon"]),
 };

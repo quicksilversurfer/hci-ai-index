@@ -24,6 +24,8 @@ export default function NewsletterRow({
           issue_year: issue.year,
           issue_month: issue.month,
           total_papers_reviewed: issue.total_papers_reviewed,
+          link_context: "newsletter_archive",
+          target_url: `/newsletters/${issue.id}`,
         });
       }}
       className={clsx(

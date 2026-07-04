@@ -275,6 +275,7 @@ export default function Header() {
               issueId={newsletterIssueId}
               title={`HCI Index ${newsletterIssueId}`}
               url={newsletterIssueUrl}
+              shareContext="issue_header"
               variant="icon"
             />
           )}

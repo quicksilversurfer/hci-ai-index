@@ -51,35 +51,25 @@ export default function Footer() {
     {
       label: "RSS",
       href: "/rss.xml",
+      format: "rss",
       type: "application/rss+xml",
       description: "Use with feed readers such as NetNewsWire, Feedly, or Reeder.",
     },
     {
       label: "Atom",
       href: "/atom.xml",
+      format: "atom",
       type: "application/atom+xml",
       description: "Use when your reader or publishing tool prefers Atom.",
     },
     {
       label: "JSON Feed",
       href: "/feed.json",
+      format: "json_feed",
       type: "application/feed+json",
       description: "Use for apps, automations, and modern feed clients.",
     },
   ];
-
-  useEffect(() => {
-    if (!isFeedModalOpen) return;
-
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        setIsFeedModalOpen(false);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isFeedModalOpen]);
 
   const openFeedModal = () => {
     setIsFeedModalOpen(true);
@@ -88,10 +78,33 @@ export default function Footer() {
     });
   };
 
+  const closeFeedModal = (closeMethod) => {
+    setIsFeedModalOpen(false);
+    captureAnalyticsEvent("feed_modal_closed", {
+      link_context: "footer_modal",
+      close_method: closeMethod,
+    });
+  };
+
+  useEffect(() => {
+    if (!isFeedModalOpen) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        closeFeedModal("escape_key");
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isFeedModalOpen]);
+
   const trackFeedClick = (feed) => {
     captureAnalyticsEvent("feed_link_clicked", {
       feed_label: feed.label,
       feed_href: feed.href,
+      feed_format: feed.format,
+      feed_type: feed.type,
       link_context: "footer_modal",
     });
   };
@@ -140,7 +153,7 @@ export default function Footer() {
           role="presentation"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) {
-              setIsFeedModalOpen(false);
+              closeFeedModal("backdrop");
             }
           }}
         >
@@ -170,7 +183,7 @@ export default function Footer() {
               <button
                 type="button"
                 className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base-500 transition-colors hover:bg-base-100 hover:text-base-950 dark:text-base-400 dark:hover:bg-base-900 dark:hover:text-base-50"
-                onClick={() => setIsFeedModalOpen(false)}
+                onClick={() => closeFeedModal("close_button")}
                 aria-label="Close feeds"
               >
                 <CloseIcon />
