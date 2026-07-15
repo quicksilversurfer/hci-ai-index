@@ -9,9 +9,9 @@ const CLOUDFRONT_BASE_URL = "https://d1ra9o23dseopo.cloudfront.net";
 async function fetchJson<T>(url: string, tags: string[] = [], revalidate: number = 3600): Promise<T | null> {
   try {
     const res = await fetch(url, {
-      // cache: 'no-store', // Removed to allow caching
       next: {
-        revalidate, // Default 1 hour
+        // The publisher expires these tags on demand; one hour is the safety net.
+        revalidate,
         tags
       }
     });
@@ -42,7 +42,7 @@ export async function getAllNewsletters() {
         path: string;
       }>
     }>(
-      `${CLOUDFRONT_BASE_URL}/index.json?v=optimized`,
+      `${CLOUDFRONT_BASE_URL}/index.json`,
       ['newsletters-index']
     );
 
